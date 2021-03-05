@@ -12,8 +12,7 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 
 import { GlobalStyle } from '../styles/global-styles';
 
-import { HomePage } from './pages/HomePage/Loadable';
-import { NotFoundPage } from './pages/NotFoundPage/Loadable';
+import { NotFoundPage } from './containers/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 
 export function App() {
@@ -29,7 +28,6 @@ export function App() {
       </Helmet>
 
       <Switch>
-        <Route exact path={process.env.PUBLIC_URL + '/'} component={HomePage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

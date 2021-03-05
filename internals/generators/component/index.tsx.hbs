@@ -1,27 +1,26 @@
 /**
 *
-* {{ properCase componentName }}
+* {{ properCase ComponentName }}
 *
 */
 {{#if wantMemo}}
 import React, { memo } from 'react';
 {{else}}
-import * as React from 'react';
+import React from 'react';
 {{/if}}
 {{#if wantStyledComponents}}
-import styled from 'styled-components/macro';
+import styled from '@emotion/styled';
 {{/if}}
 {{#if wantTranslations}}
 import { useTranslation } from 'react-i18next';
-import { messages } from './messages';
 {{/if}}
 
 interface Props {}
 
 {{#if wantMemo}}
-export const {{ properCase componentName }} = memo((props: Props) => {
+export const {{ properCase ComponentName }} = memo((props: Props) => {
 {{else}}
-export function {{ properCase componentName }}(props: Props) {
+export function {{ properCase ComponentName }}(props: Props) {
 {{/if}}
   {{#if wantTranslations}}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -36,7 +35,6 @@ export function {{ properCase componentName }}(props: Props) {
   {{/if}}
     {{#if wantTranslations}}
     {t('')}
-    {/*  {t(...messages.someThing())}  */}
     {{/if}}
   {{#if wantStyledComponents}}
   </Div>

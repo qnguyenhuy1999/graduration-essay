@@ -1,18 +1,25 @@
 import { NodePlopAPI } from 'node-plop';
 import { componentGenerator } from './component';
+import { containerGenerator } from './container';
 import shell from 'shelljs';
-import { sliceGenerator } from './slice';
-interface PrettifyCustomActionData {
+
+interface CustomActionData {
   path: string;
+  file?: string;
 }
+
+/**
+ * Every generated backup file gets this extension
+ */
+export const BACKUPFILE_EXTENSION = 'rbgen';
 
 export default function plop(plop: NodePlopAPI) {
   plop.setGenerator('component', componentGenerator);
-  plop.setGenerator('slice', sliceGenerator);
+  plop.setGenerator('container', containerGenerator);
 
   plop.setActionType('prettify', (answers, config) => {
-    const data = config.data as PrettifyCustomActionData;
-    shell.exec(`yarn run prettify -- "${data.path}"`, { silent: true });
+    const data = config.data as CustomActionData;
+    shell.exec(`npm run prettify -- "${data.path}"`, { silent: true });
     return '';
   });
 }
