@@ -22,7 +22,8 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import { configureAppStore } from 'store/configureStore';
 
-import { ThemeProvider } from 'styles/theme/ThemeProvider';
+import { ThemeProvider } from '@emotion/react';
+import theme from 'styles/theme';
 
 import reportWebVitals from 'reportWebVitals';
 
@@ -43,7 +44,7 @@ const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
 ReactDOM.render(
   <Provider store={store}>
-    <ThemeProvider>
+    <ThemeProvider theme={theme}>
       <HelmetProvider>
         <React.StrictMode>
           <App />

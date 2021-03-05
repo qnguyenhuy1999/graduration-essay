@@ -1,5 +1,4 @@
-import { GithubRepoFormState } from 'app/pages/HomePage/Features/GithubRepoForm/slice/types';
-import { ThemeState } from 'styles/theme/slice/types';
+import { HomeState } from 'app/containers/Home/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -9,7 +8,6 @@ import { ThemeState } from 'styles/theme/slice/types';
   So, not available always
 */
 export interface RootState {
-  theme?: ThemeState;
-  githubRepoForm?: GithubRepoFormState;
+  home?: HomeState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }
