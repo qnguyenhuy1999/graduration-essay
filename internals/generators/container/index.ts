@@ -98,7 +98,7 @@ export const containerGenerator: PlopGenerator | any = {
       {
         type: 'add',
         path: `${containerPath}/index.tsx`,
-        templateFile: './container/index.tsx.hbs',
+        templateFile: './container/index.ts.hbs',
         abortOnFail: true,
       },
     ];

@@ -10,6 +10,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    font-size: 14px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding-top: ${StyleConstants.NAV_BAR_HEIGHT};
   }
