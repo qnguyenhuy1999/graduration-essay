@@ -1,18 +1,15 @@
 import { createGlobalStyle } from 'styled-components';
-import { StyleConstants } from './StyleConstants';
+
 /* istanbul ignore next */
 export const GlobalStyle = createGlobalStyle`
   html,
   body {
-    height: 100%;
-    width: 100%;
     line-height: 1.5;
   }
 
   body {
     font-size: 14px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding-top: ${StyleConstants.NAV_BAR_HEIGHT};
   }
 
   body.fontLoaded {
@@ -32,5 +29,10 @@ export const GlobalStyle = createGlobalStyle`
   .icon {
     width: 1.5rem;
     height: 1.5rem;
+  }
+  
+  a, a:hover{
+    color: black;
+    text-decoration: none;
   }
 `;

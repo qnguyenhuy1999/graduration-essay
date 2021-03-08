@@ -29,6 +29,16 @@ const theme = {
     semiBold: 600,
     bold: 700,
   },
+  lineHeights: {
+    h1: '3.42rem',
+    h2: '2.86rem',
+    h3: '2.57rem',
+    h4: '2.29rem',
+    h5: '2rem',
+    h6: '1.71rem',
+    small: '1.29rem',
+    body: '1.43rem',
+  },
   shadows: {
     element: '0px 0px 10px 2px rgba(21, 21, 21, 0.02)',
     hoverElement: '0px 0px 10px 2px rgba(21, 21, 21, 0.08)',

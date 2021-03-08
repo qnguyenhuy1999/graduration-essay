@@ -1,6 +1,6 @@
 /**
  *
- * Home
+ * Presentation
  *
  */
 
@@ -10,30 +10,30 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { reducer, sliceKey } from './slice';
-import { selectHome } from './selectors';
-import { homeSaga } from './saga';
+import { selectPresentation } from './selectors';
+import { presentationSaga } from './saga';
 
 import { Header } from 'app/components/Header';
 
-export function Home() {
+export function Presentation() {
   useInjectReducer({ key: sliceKey, reducer: reducer });
-  useInjectSaga({ key: sliceKey, saga: homeSaga });
+  useInjectSaga({ key: sliceKey, saga: presentationSaga });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const home = useSelector(selectHome);
+  const presentation = useSelector(selectPresentation);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const dispatch = useDispatch();
 
   return (
     <div>
       <Helmet>
-        <title>Home</title>
-        <meta name="description" content="Description of Home" />
+        <title>Presentation</title>
+        <meta name="description" content="Description of Presentation" />
       </Helmet>
 
       <Header />
 
-      <div>Editor view</div>
+      <div>Presentation view</div>
     </div>
   );
 }

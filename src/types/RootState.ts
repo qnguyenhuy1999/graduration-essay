@@ -1,4 +1,5 @@
 import { HomeState } from 'app/containers/Home/types';
+import { PresentationState } from 'app/containers/Presentation/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -9,5 +10,6 @@ import { HomeState } from 'app/containers/Home/types';
 */
 export interface RootState {
   home?: HomeState;
+  presentation?: PresentationState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

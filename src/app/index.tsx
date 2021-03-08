@@ -9,18 +9,21 @@
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import { GlobalStyle } from '../styles/global-styles';
+import 'styles/app.scss';
 
 import { NotFoundPage } from './containers/NotFoundPage/Loadable';
-import { useTranslation } from 'react-i18next';
+import { Home } from './containers/Home/Loadable';
+import { Presentation } from './containers/Presentation/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
   return (
     <BrowserRouter>
       <Helmet
-        titleTemplate="%s - React Boilerplate"
+        titleTemplate="%s - Slide Presentation"
         defaultTitle="React Boilerplate"
         htmlAttributes={{ lang: i18n.language }}
       >
@@ -28,6 +31,8 @@ export function App() {
       </Helmet>
 
       <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/presentation" component={Presentation} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
