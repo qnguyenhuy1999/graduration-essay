@@ -24,10 +24,10 @@ export function App() {
     <BrowserRouter>
       <Helmet
         titleTemplate="%s - Slide Presentation"
-        defaultTitle="React Boilerplate"
+        defaultTitle="Slide Presentation"
         htmlAttributes={{ lang: i18n.language }}
       >
-        <meta name="description" content="A React Boilerplate application" />
+        <meta name="description" content="A Slide Presentation application" />
       </Helmet>
 
       <Switch>

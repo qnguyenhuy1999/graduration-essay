@@ -7,6 +7,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
+import styled from '@emotion/styled';
 
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { reducer, sliceKey } from './slice';
@@ -14,8 +15,9 @@ import { selectHome } from './selectors';
 import { homeSaga } from './saga';
 
 import { Header } from 'app/components/Header';
+import { Element } from './components/element';
 
-export function Home() {
+export const Home = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: homeSaga });
 
@@ -25,7 +27,7 @@ export function Home() {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <HomeWrapper>
       <Helmet>
         <title>Home</title>
         <meta name="description" content="Description of Home" />
@@ -33,7 +35,12 @@ export function Home() {
 
       <Header />
 
-      <div>Editor view</div>
-    </div>
+      <Element />
+    </HomeWrapper>
   );
-}
+};
+
+const HomeWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;

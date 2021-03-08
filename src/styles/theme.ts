@@ -3,6 +3,7 @@ const theme = {
     primaryBlue: '#000852',
     primaryBlack: '#242424',
     primaryWhite: '#FDFEFF',
+    redPigment: '#C20E0E',
   },
   space: {
     none: 0,
