@@ -15,7 +15,7 @@ import { presentationSaga } from './saga';
 
 import { Header } from 'app/components/Header';
 
-export function Presentation() {
+export const Presentation = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: presentationSaga });
 
@@ -36,4 +36,4 @@ export function Presentation() {
       <div>Presentation view</div>
     </div>
   );
-}
+};
