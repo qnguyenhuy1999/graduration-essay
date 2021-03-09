@@ -3,8 +3,10 @@ import { createSlice } from 'utils/@reduxjs/toolkit';
 
 import { ContainerState } from './types';
 import { NodeElement, Position } from 'types/element';
+import { Line } from 'types/line';
 import { setData } from 'lib/helpers/localStorage';
 import { newElement } from 'lib/helpers/element';
+import { newLine } from 'lib/helpers/line';
 
 interface AddElementType {
   mainElement: NodeElement;
@@ -14,6 +16,7 @@ interface AddElementType {
 // The initial state of the Home container
 export const initialState: ContainerState = {
   listElements: [],
+  listLines: [],
 };
 
 const homeSlice = createSlice({
@@ -71,8 +74,13 @@ const homeSlice = createSlice({
       };
       cloneListElements.push(element);
 
+      //TODO: when call from api of this action success will set new link
+      const line = newLine(mainElement.id, direction, element.id);
+
       state.listElements = cloneListElements;
+      state.listLines.push(line);
       setData('elements', state.listElements);
+      setData('lines', state.listLines);
     },
 
     updatePositionElement(state, action: PayloadAction<any>) {
@@ -92,8 +100,15 @@ const homeSlice = createSlice({
       setData('elements', state.listElements);
     },
 
+    addLine(state, action: PayloadAction<Line>) {
+      const { mainId, mainDirection, extraId } = action.payload;
+      const line = newLine(mainId, mainDirection, extraId);
+      state.listLines.push(line);
+    },
+
     resetState() {
       setData('elements', []);
+      setData('lines', []);
       return { ...initialState };
     },
   },

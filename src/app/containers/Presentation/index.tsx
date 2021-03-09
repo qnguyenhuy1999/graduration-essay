@@ -13,8 +13,6 @@ import { reducer, sliceKey } from './slice';
 import { selectPresentation } from './selectors';
 import { presentationSaga } from './saga';
 
-import { Header } from 'app/components/Header';
-
 export const Presentation = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: presentationSaga });
@@ -30,8 +28,6 @@ export const Presentation = () => {
         <title>Presentation</title>
         <meta name="description" content="Description of Presentation" />
       </Helmet>
-
-      <Header />
 
       <div>Presentation view</div>
     </div>
