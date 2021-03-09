@@ -1,6 +1,7 @@
 import { NodeElement, Position } from 'types/element';
+import { Direction } from 'types/line';
 
-const getOppositeDirection = direction => {
+const getOppositeDirection = (direction): Direction => {
   switch (direction) {
     case 'top': {
       return 'bottom';
@@ -13,6 +14,9 @@ const getOppositeDirection = direction => {
     }
     case 'left': {
       return 'right';
+    }
+    default: {
+      return 'top';
     }
   }
 };

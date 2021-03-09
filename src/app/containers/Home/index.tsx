@@ -14,17 +14,17 @@ import { reducer, sliceKey, actions } from './slice';
 import { selectHome } from './selectors';
 import { homeSaga } from './saga';
 
-import { Header } from 'app/components/Header';
-import { Button, Flex } from 'app/components/Common';
+import { Button } from 'app/components/Common';
 import { Element } from './components/element';
 import { NodeElement } from 'types/element';
 import { getData as getDataFromLocal } from 'lib/helpers/localStorage';
+import { Line } from './components/line';
 
 export const Home = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: homeSaga });
 
-  const { listElements } = useSelector(selectHome);
+  const { listElements, listLines } = useSelector(selectHome);
   const dispatch = useDispatch();
 
   const local_listElements: NodeElement[] = getDataFromLocal('elements') || [];
@@ -32,7 +32,7 @@ export const Home = () => {
   useEffect(() => {
     if (local_listElements.length < 1) {
       const x = window.innerWidth / 2 + 25;
-      const y = window.innerHeight / 2 + 25;
+      const y = window.innerHeight / 2 - 25;
       dispatch(actions.initialElement({ x, y }));
     } else {
       dispatch(actions.setListElements({ listElements: local_listElements }));
@@ -47,21 +47,34 @@ export const Home = () => {
         <meta name="description" content="Description of Home" />
       </Helmet>
 
-      <Header />
-
-      <Flex
-        justifyContent="flex-end"
-        mt="m"
-        mr="m"
-        onClick={() => dispatch(actions.resetState())}
-      >
+      <ButtonWrapper onClick={() => dispatch(actions.resetState())}>
         <Button variant="primary">Reset</Button>
-      </Flex>
+      </ButtonWrapper>
 
       {listElements.length > 0 &&
         listElements.map((element, index) => (
           <Element element={element} key={index} />
         ))}
+
+      <svg width="100%" height="100%">
+        <marker
+          id="markerCircle"
+          markerWidth="6"
+          markerHeight="6"
+          refY="3"
+          refX="3"
+        >
+          <circle
+            cx="3"
+            cy="3"
+            r="3"
+            style={{ stroke: 'none', fill: '#2f8ec4' }}
+          />
+        </marker>
+
+        {listLines.length > 0 &&
+          listLines.map((line, index) => <Line line={line} key={index} />)}
+      </svg>
     </HomeWrapper>
   );
 };
@@ -69,4 +82,11 @@ export const Home = () => {
 const HomeWrapper = styled.div`
   width: 100vw;
   height: 100vh;
+  position: relative;
+`;
+
+const ButtonWrapper = styled.div`
+  position: absolute;
+  top: 15px;
+  right: 15px;
 `;

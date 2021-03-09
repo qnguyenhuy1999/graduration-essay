@@ -17,6 +17,7 @@ import 'styles/app.scss';
 import { NotFoundPage } from './containers/NotFoundPage/Loadable';
 import { Home } from './containers/Home/Loadable';
 import { Presentation } from './containers/Presentation/Loadable';
+import { Header } from './components/Header';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -29,6 +30,8 @@ export function App() {
       >
         <meta name="description" content="A Slide Presentation application" />
       </Helmet>
+
+      <Header />
 
       <Switch>
         <Route exact path="/" component={Home} />
