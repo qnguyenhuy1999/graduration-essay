@@ -1,8 +1,28 @@
+import React from 'react';
 import styled from '@emotion/styled';
-import { variant } from 'styled-system';
-import { layout, color, space, border, typography } from 'styled-system';
+import {
+  variant,
+  layout,
+  color,
+  space,
+  border,
+  typography,
+} from 'styled-system';
 
-const Button = styled.button<any>(
+interface Props {
+  loading: boolean;
+}
+
+const Button = (props: Props | any) => {
+  const { children, loading } = props;
+  return (
+    <ButtonStyled disabled={loading} {...props}>
+      {!!loading ? 'Loading...' : children}
+    </ButtonStyled>
+  );
+};
+
+const ButtonStyled = styled.button<any>(
   {
     padding: '6px 15px;',
     borderRadius: '5px',

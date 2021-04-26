@@ -53,7 +53,6 @@ const H6 = styled('h6')<BaseHeadingProps>`
   font-size: ${props => props.theme.fontSizes.h6};
   font-weight: ${props => props.theme.fontWeights.medium};
   line-height: ${props => props.theme.lineHeights.h6};
-  font-family: ${props => props.theme.fonts.primary};
   ${compose(color, space, typography, position, border, fontWeight)};
 `;
 

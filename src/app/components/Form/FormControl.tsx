@@ -25,7 +25,6 @@ const FormControl = styled(Form.Control)<DisplayProps & any>`
     outline: none;
     border-color: ${p => p.readOnly && p.theme.colors.silver};
   }
-  font-family: ${p => p.theme.fonts.secondary};
   border: 1px solid
     ${props => (props.border ? props.border : props.theme.colors.silver)};
   border-color: ${props => props.readOnly && props.theme.colors.silver};

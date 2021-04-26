@@ -1,5 +1,9 @@
 import { HomeState } from 'app/containers/Home/types';
+import { EditorState } from 'app/containers/Editor/types';
 import { PresentationState } from 'app/containers/Presentation/types';
+import { LoginState } from 'app/containers/Login/types';
+import { AuthState } from 'app/containers/Auth/types';
+import { RegisterState } from 'app/containers/Register/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -9,7 +13,11 @@ import { PresentationState } from 'app/containers/Presentation/types';
   So, not available always
 */
 export interface RootState {
+  auth?: AuthState;
+  login?: LoginState;
+  register?: RegisterState;
   home?: HomeState;
+  editor?: EditorState;
   presentation?: PresentationState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

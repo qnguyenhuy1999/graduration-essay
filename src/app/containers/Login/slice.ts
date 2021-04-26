@@ -1,23 +1,21 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
-
 import { ContainerState } from './types';
-import { Slide } from 'types/slide';
 
-// The initial state of the Home container
+// The initial state of the Login container
 export const initialState: ContainerState = {
   loading: false,
-  slides: [],
   error: null,
+  loginResult: null,
 };
 
-const homeSlice = createSlice({
-  name: 'home',
+const loginSlice = createSlice({
+  name: 'login',
   initialState,
   reducers: {
-    getSlides(state) {},
-    getSlidesSuccess(state, action: PayloadAction<Slide[]>) {
-      state.slides = action.payload;
+    doLogin(state, action: PayloadAction<any>) {},
+    doLoginSuccess(state, action: PayloadAction<any>) {
+      state.loginResult = action.payload;
     },
     getError(state, action: PayloadAction<any>) {
       state.error = action.payload;
@@ -31,4 +29,4 @@ const homeSlice = createSlice({
   },
 });
 
-export const { actions, reducer, name: sliceKey } = homeSlice;
+export const { actions, reducer, name: sliceKey } = loginSlice;

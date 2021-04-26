@@ -1,10 +1,10 @@
 /* --- STATE --- */
-import { NodeElement } from 'types/element';
-import { Line } from 'types/line';
+import { Slide } from 'types/slide';
 
 export interface HomeState {
-  listElements: NodeElement[];
-  listLines: Line[];
+  loading: boolean;
+  slides: Slide[];
+  error: any;
 }
 
 export type ContainerState = HomeState;

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Line as LineType } from 'types/line';
 import { Position } from 'types/element';
-import { selectHome } from '../../selectors';
+import { selectEditor } from '../../selectors';
 import { getPosLink } from 'lib/helpers/line';
 import styled from '@emotion/styled';
 
@@ -16,19 +16,15 @@ export const Line = (props: Props) => {
   const [positionStart, setPositionStart] = useState<Position | null>(null);
   const [positionEnd, setPositionEnd] = useState<Position | null>(null);
   const [isSelected, setIsSelected] = useState<boolean>(false);
-  const { listElements } = useSelector(selectHome);
+  const { listElements } = useSelector(selectEditor);
 
   useEffect(() => {
     if (listElements?.length > 0) {
-      const mainElement = listElements.find(
-        element => element.id === line?.mainId,
-      );
-      const calcPosStart = getPosLink(mainElement, line.mainDirection);
+      const mainElement = listElements[0];
+      const calcPosStart = getPosLink(mainElement, 'top');
       setPositionStart(calcPosStart);
-      const extraElement = listElements.find(
-        element => element.id === line?.extraId,
-      );
-      const calcPosEnd = getPosLink(extraElement, line.extraDirection);
+      const extraElement = listElements[1];
+      const calcPosEnd = getPosLink(extraElement, 'bottom');
       setPositionEnd(calcPosEnd);
     }
   }, [line, listElements]);

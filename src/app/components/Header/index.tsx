@@ -19,7 +19,7 @@ export const Header = () => {
         </Link>
       </H4>
       <Flex alignItems="center">
-        <NavLink exact to="/" mr="s" activeStyle={activeLink}>
+        <NavLink exact to="/editor" mr="s" activeStyle={activeLink}>
           Route editor
         </NavLink>
         <NavLink to="/presentation" activeStyle={activeLink}>

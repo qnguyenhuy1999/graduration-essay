@@ -6,7 +6,6 @@ const FormLabel = styled.label<SpaceProps & any>`
   margin-bottom: ${props => props.theme.space.xs};
   color: ${props => props.theme.colors.dimGray};
   font-weight: ${props => props.theme.fontWeights.bold};
-  font-family: ${props => props.theme.fonts.secondary};
   text-transform: ${p => (p.isNormal ? 'none' : 'uppercase')};
   ${space};
   ${fontWeight};

@@ -10,15 +10,14 @@ const UNAUTHORIZED_CODE = [401, 403];
 export class BaseApiService {
   protected instance: AxiosInstance;
   constructor() {
+    const token = localStorage.getItem('sp_token');
+    const authorization = token ? { Authorization: `Bearer ${token}` } : null;
     this.instance = axios.create({
       baseURL: process.env.REACT_APP_BASE_API_URL,
       headers: {
         'Content-Type': 'application/json',
-        'X-Frame-Options': 'sameorigin',
-        'X-Content-Type-Options': 'nosniff',
-        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+    {...authorization},
       },
-      withCredentials: true,
     });
   }
 
@@ -58,7 +57,7 @@ export class BaseApiService {
     );
   }
 
-  protected download<T = any>(url: string) {
+  protected download(url: string) {
     window.open(
       process.env.REACT_APP_BASE_API_URL + this.formatUrl(url),
       'download',
@@ -76,15 +75,19 @@ export class BaseApiService {
   /*
     Handle generic error and transform response to app response.
     */
-  private async handleRequest<T = any>(
-    axiosResponse: AxiosPromise<T>,
+  private async handleRequest(
+    axiosResponse: AxiosPromise<any>,
   ): Promise<ApiResponse> {
     try {
       const response = await axiosResponse;
-      return {
-        data: response.data,
-        originResponse: response,
-      };
+      if (response.data.status >= 200 && response.data.status < 300) {
+        return {
+          data: response.data,
+          originResponse: response,
+        };
+      } else {
+        throw response;
+      }
     } catch (error) {
       let apiError: ApiError = {
         name: 'NETWORK_ERROR',
@@ -103,6 +106,7 @@ export class BaseApiService {
         if (data) {
           if (this.redirectIfUnauthorized(data.status_code)) {
             window.location.replace('/login');
+            localStorage.removeItem('sp_token');
           } else {
             //TODO: define again
             apiError.errors = data.errors;
