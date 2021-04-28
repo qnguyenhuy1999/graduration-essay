@@ -12,8 +12,9 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { actions, reducer, sliceKey } from './slice';
 import { selectHome } from './selectors';
 import { homeSaga } from './saga';
-import { Flex, Span } from '../../components';
+import { Flex, H4, Span } from '../../components';
 import { Slide } from './components/Slide';
+import { ProtectedLayout } from '../ProtectedLayout';
 
 interface Props {}
 
@@ -30,20 +31,28 @@ export function Home(props: Props) {
   }, []);
 
   return (
-    <>
+    <ProtectedLayout>
       <Helmet>
         <title>Home</title>
         <meta name="description" content="Description of Home" />
       </Helmet>
-      {loading ? (
-        <Span variant="body">Loading....</Span>
-      ) : (
-        slides.map(slide => (
-          <Flex flexWrap="wrap" key={slide.id}>
-            <Slide name={slide.name} status={slide.status} />
-          </Flex>
-        ))
-      )}
-    </>
+      <div className="mt-4">
+        <H4 mb="l">List slide</H4>
+        <Flex flexWrap="wrap">
+          {loading ? (
+            <Span variant="body">Loading....</Span>
+          ) : (
+            slides.map(slide => (
+              <Slide
+                name={slide.name}
+                status={slide.status}
+                id={slide.id}
+                key={slide.id}
+              />
+            ))
+          )}
+        </Flex>
+      </div>
+    </ProtectedLayout>
   );
 }

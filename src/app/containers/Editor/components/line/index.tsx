@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import styled from '@emotion/styled';
 
 import { Line as LineType } from 'types/line';
 import { Position } from 'types/element';
 import { selectEditor } from '../../selectors';
-import { getPosLink } from 'lib/helpers/line';
-import styled from '@emotion/styled';
+import { getElementAndNodeForLine, getPosLink } from 'lib/helpers/line';
+import { convertNumberToDirection } from 'lib/helpers/element';
 
 interface Props {
   line: LineType;
@@ -20,12 +21,22 @@ export const Line = (props: Props) => {
 
   useEffect(() => {
     if (listElements?.length > 0) {
-      const mainElement = listElements[0];
-      const calcPosStart = getPosLink(mainElement, 'top');
-      setPositionStart(calcPosStart);
-      const extraElement = listElements[1];
-      const calcPosEnd = getPosLink(extraElement, 'bottom');
-      setPositionEnd(calcPosEnd);
+      const { element, node, _element, _node } = getElementAndNodeForLine(
+        listElements,
+        line,
+      );
+
+      const calcPosStart =
+        element &&
+        node &&
+        getPosLink(element, convertNumberToDirection(node.nodeNumber));
+      setPositionStart(calcPosStart || null);
+
+      const calcPosEnd =
+        _element &&
+        _node &&
+        getPosLink(_element, convertNumberToDirection(_node.nodeNumber));
+      setPositionEnd(calcPosEnd || null);
     }
   }, [line, listElements]);
 

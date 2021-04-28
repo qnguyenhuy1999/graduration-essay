@@ -1,13 +1,15 @@
 import React from 'react';
-import { Box, Span } from 'app/components';
+import { Box, Link, Span } from 'app/components';
 
 export function Slide(props) {
-  const { name } = props;
+  const { name, id } = props;
   return (
-    <Box variant="default">
-      <Span variant="body" fontWeight="bold" px="s" py="xs">
-        {name}
-      </Span>
-    </Box>
+    <Link to={`/slide/${id}/editor`} mr="m">
+      <Box variant="default" p="m">
+        <Span variant="body" fontWeight="bold">
+          {name}
+        </Span>
+      </Box>
+    </Link>
   );
 }

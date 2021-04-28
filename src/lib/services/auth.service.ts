@@ -1,6 +1,5 @@
 import { ApiResponse, LoginFormValues, RegisterFormValues } from 'types';
 import { BaseApiService } from './axios.service';
-import axios from 'axios';
 
 export class AuthServiceFactory extends BaseApiService {
   getCurrentUser(): Promise<ApiResponse> {

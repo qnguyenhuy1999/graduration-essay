@@ -12,6 +12,7 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { reducer, sliceKey } from './slice';
 import { selectPresentation } from './selectors';
 import { presentationSaga } from './saga';
+import { ProtectedLayout } from '../ProtectedLayout';
 
 export const Presentation = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
@@ -23,13 +24,13 @@ export const Presentation = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <ProtectedLayout>
       <Helmet>
         <title>Presentation</title>
         <meta name="description" content="Description of Presentation" />
       </Helmet>
 
       <div>Presentation view</div>
-    </div>
+    </ProtectedLayout>
   );
 };

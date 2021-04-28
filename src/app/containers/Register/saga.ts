@@ -11,7 +11,7 @@ export function* doRegister(action) {
     );
     yield put(actions.doRegisterSuccess(sessionResponse.data.message));
   } catch (err) {
-    yield put(actions.getError(err.message));
+    yield put(actions.getError(err.data.message));
   }
 }
 

@@ -1,114 +1,84 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+﻿import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 
 import { ContainerState } from './types';
-import { NodeElement, Position } from 'types/element';
-import { Line } from 'types/line';
-import { setData } from 'lib/helpers/localStorage';
-import { newElement } from 'lib/helpers/element';
-import { newLine } from 'lib/helpers/line';
-
-interface AddElementType {
-  mainElement: NodeElement;
-  direction: string;
-}
+import {
+  CreateElement,
+  Element,
+  RemoveElement,
+  RemoveElementResponse,
+  ResponseNewElement,
+} from 'types/element';
 
 // The initial state of the Editor container
 export const initialState: ContainerState = {
+  loading: false,
   listElements: [],
   listLines: [],
+  createElementResult: null,
+  removeElementResult: null,
+  error: null,
+};
+
+const removeLinesWhenRemoveElement = (listElements, listLines, elementId) => {
+  const cloneListElements = [...listElements];
+  const cloneListLines = [...listLines];
+
+  const element = cloneListElements.find(
+    element => element.elementId === elementId,
+  );
+
+  element.nodes.forEach(node => {
+    cloneListLines.forEach((link, index) => {
+      link.linkId === node.linkId && listLines.splice(index, 1);
+    });
+  });
+
+  return cloneListLines;
 };
 
 const editorSlice = createSlice({
   name: 'editor',
   initialState,
   reducers: {
-    initialElement(state, action: PayloadAction<Position>) {
-      const { x, y } = action.payload;
-      const defaultElement: NodeElement = {
-        x,
-        y,
-        content: '<p>Root element</p>',
-        direction: {
-          top: { text: 'top', linked: false },
-          right: { text: 'right', linked: false },
-          bottom: { text: 'bottom', linked: false },
-          left: { text: 'left', linked: false },
-        },
-      };
-
-      state.listElements = [defaultElement];
-      setData('elements', state.listElements);
+    getListElements(state, action: PayloadAction<{ slideId: string }>) {
+      state.loading = true;
     },
-
-    setListElements(
-      state,
-      action: PayloadAction<{ listElements: NodeElement[] }>,
-    ) {
-      const { listElements } = action.payload;
-      state.listElements = listElements;
+    getListElementsSuccess(state, action: PayloadAction<Element[]>) {
+      state.loading = false;
+      state.listElements = action.payload;
     },
+    getListLines(state) {
+      state.listLines = JSON.parse(<string>localStorage.getItem('links')) || [];
+    },
+    createElement(state, action: PayloadAction<CreateElement>) {},
+    createElementSuccess(state, action: PayloadAction<ResponseNewElement>) {
+      state.createElementResult = action.payload;
+    },
+    removeElement(state, action: PayloadAction<RemoveElement>) {},
+    removeElementSuccess(state, action: PayloadAction<RemoveElementResponse>) {
+      const { message, elementId } = action.payload;
 
-    addElement(state, action: PayloadAction<AddElementType>) {
-      const { mainElement, direction } = action.payload;
-      const cloneListElements = [...state.listElements];
-
-      //TODO: should be check id
-      const indexMainElement = cloneListElements.findIndex(
-        element => element.x === mainElement.x && element.y === mainElement.y,
+      const listLines = removeLinesWhenRemoveElement(
+        state.listElements,
+        state.listLines,
+        elementId,
       );
+      state.listLines = listLines;
+      localStorage.setItem('links', JSON.stringify(listLines));
 
-      const cloneDirection = {
-        ...mainElement.direction,
-      };
-      cloneDirection[direction] = {
-        ...cloneDirection[direction],
-        linked: true,
-      };
-
-      //TODO: set id from server for new element and initial element
-      const element = newElement(mainElement, direction);
-      cloneListElements[indexMainElement] = {
-        ...mainElement,
-        direction: cloneDirection,
-      };
-      cloneListElements.push(element);
-
-      //TODO: when call from api of this action success will set new link
-      const line = newLine(mainElement.id, direction, element.id);
-
-      state.listElements = cloneListElements;
-      state.listLines.push(line);
-      setData('elements', state.listElements);
-      setData('lines', state.listLines);
+      state.removeElementResult = message;
     },
 
-    updatePositionElement(state, action: PayloadAction<any>) {
-      const { element, x, y } = action.payload;
-      const cloneListElements = [...state.listElements];
-      const indexElement = cloneListElements.findIndex(
-        e => e.x === element.x && e.y === element.y,
-      );
-
-      cloneListElements[indexElement] = {
-        ...element,
-        x,
-        y,
-      };
-
-      state.listElements = cloneListElements;
-      setData('elements', state.listElements);
+    getError(state, action: PayloadAction<any>) {
+      state.error = action.payload;
     },
-
-    addLine(state, action: PayloadAction<Line>) {
-      const { mainId, mainDirection, extraId } = action.payload;
-      const line = newLine(mainId, mainDirection, extraId);
-      state.listLines.push(line);
+    resetStateResult(state) {
+      state.error = initialState.error;
+      state.createElementResult = initialState.createElementResult;
+      state.removeElementResult = initialState.removeElementResult;
     },
-
     resetState() {
-      setData('elements', []);
-      setData('lines', []);
       return { ...initialState };
     },
   },

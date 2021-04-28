@@ -1,25 +1,53 @@
-export interface DirectionDescription {
-  id?: number;
-  text: string;
-  linked: boolean;
+export interface Element {
+  elementId: string;
+  position: Position;
+  caption: string;
+  html: string;
+  status: 'able' | string;
+  nodes?: Node[];
 }
 
-export interface Direction {
-  top: DirectionDescription;
-  right: DirectionDescription;
-  bottom: DirectionDescription;
-  left: DirectionDescription;
-}
-
-export interface NodeElement {
-  id?: number;
-  x: number;
-  y: number;
-  content: string;
-  direction: Direction;
+export interface Node {
+  id: string;
+  position: Position;
+  positionNext: Position;
+  nodeLinkDefault: number;
+  nodeNumber: number;
+  caption: string;
+  linkId: 'empty' | 'string';
 }
 
 export interface Position {
   x: number;
   y: number;
+}
+
+export interface CreateElement {
+  elementId: string;
+  nodeId: string;
+  slideId: string;
+}
+
+export interface RemoveElement {
+  elementId: string;
+  slideId: string;
+}
+
+export interface RemoveElementResponse {
+  elementId: string;
+  message: string;
+}
+
+export interface NewElement {
+  id: string;
+  slideId: string;
+  position: Position;
+  caption: string;
+  html: string;
+  status: 'able' | string;
+}
+
+export interface ResponseNewElement {
+  newElement: NewElement;
+  linked: string;
 }

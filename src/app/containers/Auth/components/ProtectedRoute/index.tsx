@@ -8,14 +8,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectAuth } from '../../selectors';
 import { Route, Redirect } from 'react-router-dom';
-import { Header } from 'app/components/Header';
 
 export function ProtectedRoute({ component: Component, ...rest }) {
   const { authInfo } = useSelector(selectAuth);
 
   return (
     <>
-      <Header />
       <Route
         {...rest}
         render={props =>

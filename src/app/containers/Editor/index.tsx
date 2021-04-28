@@ -5,6 +5,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from '@emotion/styled';
@@ -16,71 +17,85 @@ import { editorSaga } from './saga';
 
 import { Button } from 'app/components/Common';
 import { Element } from './components/element';
-import { NodeElement } from 'types/element';
-import { getData as getDataFromLocal } from 'lib/helpers/localStorage';
 import { Line } from './components/line';
+import { ProtectedLayout } from '../ProtectedLayout';
+import ToastAlert from 'lib/services/alert.service';
 
 export const Editor = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: editorSaga });
 
-  const { listElements, listLines } = useSelector(selectEditor);
+  const { listElements, listLines, removeElementResult, error } = useSelector(
+    selectEditor,
+  );
   const dispatch = useDispatch();
-
-  const local_listElements: NodeElement[] = getDataFromLocal('elements') || [];
+  const { slideId } = useParams<{ slideId: string }>();
 
   useEffect(() => {
-    if (local_listElements.length < 1) {
-      const x = window.innerWidth / 2 + 25;
-      const y = window.innerHeight / 2 - 25;
-      dispatch(actions.initialElement({ x, y }));
-    } else {
-      dispatch(actions.setListElements({ listElements: local_listElements }));
-    }
+    dispatch(actions.getListElements({ slideId }));
+    dispatch(actions.getListLines());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [local_listElements.length]);
+  }, []);
+
+  useEffect(() => {
+    if (removeElementResult) {
+      ToastAlert.success('Element successfully deleted');
+      dispatch(actions.resetStateResult());
+    }
+
+    if (error) {
+      ToastAlert.error(error);
+      dispatch(actions.resetStateResult());
+    }
+  }, [dispatch, error, removeElementResult]);
 
   return (
-    <HomeWrapper onDragOver={e => e.preventDefault()}>
-      <Helmet>
-        <title>Home</title>
-        <meta name="description" content="Description of Home" />
-      </Helmet>
+    <ProtectedLayout>
+      <HomeWrapper onDragOver={e => e.preventDefault()}>
+        <Helmet>
+          <title>Home</title>
+          <meta name="description" content="Description of Home" />
+        </Helmet>
 
-      <ButtonWrapper onClick={() => dispatch(actions.resetState())}>
-        <Button variant="primary">Reset</Button>
-      </ButtonWrapper>
+        <ButtonWrapper onClick={() => dispatch(actions.resetState())}>
+          <Button variant="primary">Reset</Button>
+        </ButtonWrapper>
 
-      {listElements.length > 0 &&
-        listElements.map((element, index) => (
-          <Element element={element} key={index} />
-        ))}
+        {listElements.length > 0 &&
+          listElements.map(element => (
+            <Element
+              element={element}
+              slideId={slideId}
+              key={element.elementId}
+            />
+          ))}
 
-      <svg width="100%" height="100%">
-        <marker
-          id="markerCircle"
-          markerWidth="6"
-          markerHeight="6"
-          refY="3"
-          refX="3"
-        >
-          <circle
-            cx="3"
-            cy="3"
-            r="3"
-            style={{ stroke: 'none', fill: '#2f8ec4' }}
-          />
-        </marker>
+        <svg width="100%" height="100%">
+          <marker
+            id="markerCircle"
+            markerWidth="6"
+            markerHeight="6"
+            refY="3"
+            refX="3"
+          >
+            <circle
+              cx="3"
+              cy="3"
+              r="3"
+              style={{ stroke: 'none', fill: '#2f8ec4' }}
+            />
+          </marker>
 
-        {listLines.length > 0 &&
-          listLines.map((line, index) => <Line line={line} key={index} />)}
-      </svg>
-    </HomeWrapper>
+          {listLines.length > 0 &&
+            listLines.map((line, index) => <Line line={line} key={index} />)}
+        </svg>
+      </HomeWrapper>
+    </ProtectedLayout>
   );
 };
 
 const HomeWrapper = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   position: relative;
 `;

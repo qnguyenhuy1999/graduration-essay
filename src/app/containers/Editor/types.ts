@@ -1,10 +1,14 @@
 /* --- STATE --- */
-import { NodeElement } from 'types/element';
+import { Element, ResponseNewElement } from 'types/element';
 import { Line } from 'types/line';
 
 export interface EditorState {
-  listElements: NodeElement[];
+  loading: boolean;
+  listElements: Element[];
   listLines: Line[];
+  createElementResult: ResponseNewElement | null;
+  removeElementResult: any;
+  error: any;
 }
 
 export type ContainerState = EditorState;

@@ -14,7 +14,7 @@ export function* doLogin(action) {
 
     yield put(actions.doLoginSuccess(data.responseObject));
   } catch (err) {
-    yield put(actions.getError(err.message));
+    yield put(actions.getError(err.data.message));
   }
 }
 

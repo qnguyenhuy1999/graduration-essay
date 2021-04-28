@@ -48,8 +48,16 @@ export function App() {
           <Route exact={false} path="/register" component={Register} />
 
           <ProtectedRoute exact path="/" component={Home} />
-          <ProtectedRoute exact path="/editor" component={Editor} />
-          <ProtectedRoute path="/presentation" component={Presentation} />
+          <ProtectedRoute
+            exact
+            path="/slide/:slideId/editor"
+            component={Editor}
+          />
+          <ProtectedRoute
+            exact
+            path="/slide/:slideId/presentation"
+            component={Presentation}
+          />
 
           <Route component={NotFoundPage} />
         </Switch>

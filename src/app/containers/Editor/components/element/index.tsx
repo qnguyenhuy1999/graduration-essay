@@ -1,30 +1,49 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styled from '@emotion/styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Button, Flex, Span } from 'app/components/Common';
 import { IconWrapper } from 'app/components/Icon';
 import { Close, Edit } from 'app/components/Icon/Common';
-import { NodeElement as NodeElementType } from 'types/element';
-import ToastAlert from 'lib/services/alert.service';
+import { Element as ElementType } from 'types/element';
 import { actions } from '../../slice';
+import { selectEditor } from '../../selectors';
+import ToastAlert from 'lib/services/alert.service';
+import { makeRelation } from 'lib/helpers/line';
 
 interface Props {
-  element: NodeElementType;
+  element: ElementType;
+  slideId: string;
 }
 
 export const Element = (props: Props) => {
-  const { element } = props;
+  const { element, slideId } = props;
   const [isHover, setIsHover] = useState<boolean>(false);
   const dispatch = useDispatch();
+  const { createElementResult } = useSelector(selectEditor);
 
-  const createElement = direction => {
-    if (element[direction]?.id) {
-      ToastAlert.error('This direction of element linked');
-    } else {
-      dispatch(actions.addElement({ mainElement: element, direction }));
+  const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
+  const nodeRight = element.nodes?.find(node => node.nodeNumber === 2);
+  const nodeBottom = element.nodes?.find(node => node.nodeNumber === 3);
+  const nodeLeft = element.nodes?.find(node => node.nodeNumber === 4);
+
+  useEffect(() => {
+    if (createElementResult) {
+      makeRelation(
+        element.elementId,
+        createElementResult?.newElement.id,
+        createElementResult.linked,
+      );
+      dispatch(actions.resetStateResult());
     }
+  }, [createElementResult, dispatch, element.elementId]);
+
+  const createElement = (elementId, node) => {
+    if (node.linkId !== 'empty') {
+      return ToastAlert.error('Node is already linked');
+    }
+    dispatch(actions.createElement({ elementId, nodeId: node.id, slideId }));
   };
 
   const startMove = event => {
@@ -35,9 +54,9 @@ export const Element = (props: Props) => {
   };
 
   const incMove = e => {
-    dispatch(
-      actions.updatePositionElement({ element, x: e.pageX, y: e.pageY }),
-    );
+    // dispatch(
+    //   actions.updatePositionElement({ element, x: e.pageX, y: e.pageY }),
+    // );
   };
 
   const endMove = () => {
@@ -52,29 +71,56 @@ export const Element = (props: Props) => {
       onMouseLeave={() => setIsHover(false)}
       onDrag={startMove}
       isHover={isHover}
-      style={{ left: element?.x, top: element?.y }}
+      style={{ left: element?.position.x, top: element?.position.y }}
       draggable="true"
     >
       <NodeElement className="element">
-        <div className="path" onClick={() => createElement('top')}>
-          <Span>1</Span>
-        </div>
-        <div className="path" onClick={() => createElement('right')}>
-          <Span>2</Span>
-        </div>
-        <div className="path" onClick={() => createElement('left')}>
-          <Span>4</Span>
-        </div>
-        <div className="path" onClick={() => createElement('bottom')}>
-          <Span>3</Span>
-        </div>
+        {nodeTop && (
+          <div
+            className="path"
+            onClick={() => createElement(element.elementId, nodeTop)}
+          >
+            <Span>1</Span>
+          </div>
+        )}
+        {nodeRight && (
+          <div
+            className="path"
+            onClick={() => createElement(element.elementId, nodeRight)}
+          >
+            <Span>2</Span>
+          </div>
+        )}
+        {nodeLeft && (
+          <div
+            className="path"
+            onClick={() => createElement(element.elementId, nodeLeft)}
+          >
+            <Span>4</Span>
+          </div>
+        )}
+        {nodeBottom && (
+          <div
+            className="path"
+            onClick={() => createElement(element.elementId, nodeBottom)}
+          >
+            <Span>3</Span>
+          </div>
+        )}
       </NodeElement>
 
       <Controls justifyContent="space-between" pt="s" className="controls">
         <Button variant="primary" mr="xs">
           <IconWrapper icon={Edit} fill="primaryWhite" />
         </Button>
-        <Button variant="warning">
+        <Button
+          variant="warning"
+          onClick={() =>
+            dispatch(
+              actions.removeElement({ elementId: element.elementId, slideId }),
+            )
+          }
+        >
           <IconWrapper icon={Close} fill="primaryWhite" />
         </Button>
       </Controls>
