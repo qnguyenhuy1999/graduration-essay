@@ -20,22 +20,31 @@ import { Element } from './components/element';
 import { Line } from './components/line';
 import { ProtectedLayout } from '../ProtectedLayout';
 import ToastAlert from 'lib/services/alert.service';
+import { generateLines } from '../../../lib/helpers/line';
 
 export const Editor = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: editorSaga });
 
-  const { listElements, listLines, removeElementResult, error } = useSelector(
-    selectEditor,
-  );
+  const {
+    listElements,
+    listLines,
+    createElementResult,
+    removeElementResult,
+    error,
+  } = useSelector(selectEditor);
   const dispatch = useDispatch();
   const { slideId } = useParams<{ slideId: string }>();
 
   useEffect(() => {
     dispatch(actions.getListElements({ slideId }));
-    dispatch(actions.getListLines());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    dispatch(actions.setListLines(generateLines(listElements)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listElements]);
 
   useEffect(() => {
     if (removeElementResult) {
@@ -47,7 +56,7 @@ export const Editor = () => {
       ToastAlert.error(error);
       dispatch(actions.resetStateResult());
     }
-  }, [dispatch, error, removeElementResult]);
+  }, [createElementResult, dispatch, error, removeElementResult, slideId]);
 
   return (
     <ProtectedLayout>
@@ -57,7 +66,9 @@ export const Editor = () => {
           <meta name="description" content="Description of Home" />
         </Helmet>
 
-        <ButtonWrapper onClick={() => dispatch(actions.resetState())}>
+        <ButtonWrapper
+          onClick={() => dispatch(actions.resetSlide({ slideId }))}
+        >
           <Button variant="primary">Reset</Button>
         </ButtonWrapper>
 
@@ -103,5 +114,5 @@ const HomeWrapper = styled.div`
 const ButtonWrapper = styled.div`
   position: absolute;
   top: 15px;
-  right: 15px;
+  right: 0;
 `;

@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import styled from '@emotion/styled';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { Button, Flex, Span } from 'app/components/Common';
 import { IconWrapper } from 'app/components/Icon';
 import { Close, Edit } from 'app/components/Icon/Common';
 import { Element as ElementType } from 'types/element';
 import { actions } from '../../slice';
-import { selectEditor } from '../../selectors';
 import ToastAlert from 'lib/services/alert.service';
-import { makeRelation } from 'lib/helpers/line';
 
 interface Props {
   element: ElementType;
@@ -21,23 +19,11 @@ export const Element = (props: Props) => {
   const { element, slideId } = props;
   const [isHover, setIsHover] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const { createElementResult } = useSelector(selectEditor);
 
   const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
   const nodeRight = element.nodes?.find(node => node.nodeNumber === 2);
   const nodeBottom = element.nodes?.find(node => node.nodeNumber === 3);
   const nodeLeft = element.nodes?.find(node => node.nodeNumber === 4);
-
-  useEffect(() => {
-    if (createElementResult) {
-      makeRelation(
-        element.elementId,
-        createElementResult?.newElement.id,
-        createElementResult.linked,
-      );
-      dispatch(actions.resetStateResult());
-    }
-  }, [createElementResult, dispatch, element.elementId]);
 
   const createElement = (elementId, node) => {
     if (node.linkId !== 'empty') {

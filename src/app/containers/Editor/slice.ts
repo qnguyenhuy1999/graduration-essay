@@ -9,6 +9,7 @@ import {
   RemoveElementResponse,
   ResponseNewElement,
 } from 'types/element';
+import { Line } from 'types/line';
 
 // The initial state of the Editor container
 export const initialState: ContainerState = {
@@ -17,6 +18,7 @@ export const initialState: ContainerState = {
   listLines: [],
   createElementResult: null,
   removeElementResult: null,
+  resetSlideResult: null,
   error: null,
 };
 
@@ -48,8 +50,8 @@ const editorSlice = createSlice({
       state.loading = false;
       state.listElements = action.payload;
     },
-    getListLines(state) {
-      state.listLines = JSON.parse(<string>localStorage.getItem('links')) || [];
+    setListLines(state, action: PayloadAction<Line[]>) {
+      state.listLines = action.payload;
     },
     createElement(state, action: PayloadAction<CreateElement>) {},
     createElementSuccess(state, action: PayloadAction<ResponseNewElement>) {
@@ -59,15 +61,18 @@ const editorSlice = createSlice({
     removeElementSuccess(state, action: PayloadAction<RemoveElementResponse>) {
       const { message, elementId } = action.payload;
 
-      const listLines = removeLinesWhenRemoveElement(
+      state.listLines = removeLinesWhenRemoveElement(
         state.listElements,
         state.listLines,
         elementId,
       );
-      state.listLines = listLines;
-      localStorage.setItem('links', JSON.stringify(listLines));
 
       state.removeElementResult = message;
+    },
+
+    resetSlide(state, action: PayloadAction<{ slideId: string }>) {},
+    resetSlideSuccess(state, action: PayloadAction<any>) {
+      state.resetSlideResult = action.payload;
     },
 
     getError(state, action: PayloadAction<any>) {

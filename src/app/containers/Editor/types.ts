@@ -8,6 +8,7 @@ export interface EditorState {
   listLines: Line[];
   createElementResult: ResponseNewElement | null;
   removeElementResult: any;
+  resetSlideResult: any;
   error: any;
 }
 

@@ -1,6 +1,29 @@
 ﻿import { Position, Element } from 'types/element';
 import { Line } from 'types/line';
 
+export const generateLines = (listElements: Element[]) => {
+  const cloneListElements = [...listElements];
+  console.log(cloneListElements);
+  let result: Line[] = [];
+  for (let i = 0; i < cloneListElements.length - 1; i++) {
+    for (let j = i + 1; j < cloneListElements.length; j++) {
+      cloneListElements[i]?.nodes?.forEach(node => {
+        cloneListElements[j]?.nodes?.forEach(_node => {
+          if (node.linkId === _node.linkId && node.linkId !== 'empty') {
+            return result.push({
+              from: cloneListElements[i].elementId,
+              to: cloneListElements[j].elementId,
+              linkId: node.linkId,
+            });
+          }
+        });
+      });
+    }
+  }
+
+  return result;
+};
+
 export const getElementAndNodeForLine = (
   listElements: Element[],
   line: Line,
@@ -49,22 +72,4 @@ export const getPosLink = (element: Element, direction): Position => {
       };
     }
   }
-};
-
-export const makeRelation = (
-  elementId: string,
-  _elementId: string,
-  linkId: string,
-) => {
-  const data = {
-    from: elementId,
-    to: _elementId,
-    linkId,
-  };
-
-  const links = JSON.parse(<string>localStorage.getItem('links'));
-  links.push(data);
-  localStorage.setItem('links', JSON.stringify(links));
-
-  return data;
 };

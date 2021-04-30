@@ -21,13 +21,13 @@ export function* createElement(action) {
   try {
     const { elementId, nodeId, slideId } = action.payload;
     const sessionResponse = yield call(
-      [SlideService, SlideService.createSlide],
+      [ElementService, ElementService.createElement],
       elementId,
       nodeId,
     );
     const { data } = sessionResponse;
-    yield put(actions.getListElements({ slideId }));
     yield put(actions.createElementSuccess(data.responseObject));
+    yield put(actions.getListElements({ slideId }));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }
@@ -41,8 +41,22 @@ export function* removeElement(action) {
       elementId,
     );
     const { message } = sessionResponse;
-    yield put(actions.getListElements({ slideId }));
     yield put(actions.removeElementSuccess({ message, elementId }));
+    yield put(actions.getListElements({ slideId }));
+  } catch (err) {
+    yield put(actions.getError(err.data.message));
+  }
+}
+
+export function* resetSlide(action) {
+  try {
+    const { slideId } = action.payload;
+    const sessionResponse = yield call(
+      [SlideService, SlideService.resetSlide],
+      slideId,
+    );
+    yield put(actions.resetSlideSuccess(sessionResponse));
+    yield put(actions.getListElements({ slideId }));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }
@@ -52,4 +66,5 @@ export function* editorSaga() {
   yield takeLatest(actions.getListElements.type, getListElements);
   yield takeLatest(actions.createElement.type, createElement);
   yield takeLatest(actions.removeElement.type, removeElement);
+  yield takeLatest(actions.resetSlide.type, resetSlide);
 }

@@ -10,8 +10,14 @@ export class SlideServiceFactory extends BaseApiService {
     return this.get(`/api/slide/${slideId}`);
   }
 
-  createSlide(elementId, nodeId): Promise<ApiResponse> {
-    return this.post('/api/slide/create', { elementId, nodeId });
+  createSlide(name): Promise<ApiResponse> {
+    return this.post('/api/slide/create', { name });
+  }
+
+  resetSlide(slideId): Promise<ApiResponse> {
+    return this.put(`/api/slide/reset`, {
+      slideId,
+    });
   }
 }
 

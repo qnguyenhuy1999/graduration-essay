@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosPromise, AxiosRequestConfig } from 'axios';
 
-import { ApiError, ApiResponse } from 'types/api';
+import { ApiResponse } from 'types/api';
 
 const UNAUTHORIZED_CODE = [401, 403];
 
