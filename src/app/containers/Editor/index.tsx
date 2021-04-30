@@ -47,6 +47,11 @@ export const Editor = () => {
   }, [listElements]);
 
   useEffect(() => {
+    if (createElementResult) {
+      ToastAlert.success('Element successfully created');
+      dispatch(actions.resetStateResult());
+    }
+
     if (removeElementResult) {
       ToastAlert.success('Element successfully deleted');
       dispatch(actions.resetStateResult());

@@ -103,7 +103,7 @@ export const Element = (props: Props) => {
           variant="warning"
           onClick={() =>
             dispatch(
-              actions.removeElement({ elementId: element.elementId, slideId }),
+              actions.removeElement({ elementId: element.elementId }),
             )
           }
         >

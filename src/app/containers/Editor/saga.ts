@@ -19,15 +19,14 @@ export function* getListElements(action) {
 
 export function* createElement(action) {
   try {
-    const { elementId, nodeId, slideId } = action.payload;
+    const { elementId, nodeId } = action.payload;
     const sessionResponse = yield call(
       [ElementService, ElementService.createElement],
       elementId,
       nodeId,
     );
     const { data } = sessionResponse;
-    yield put(actions.createElementSuccess(data.responseObject));
-    yield put(actions.getListElements({ slideId }));
+    yield put(actions.createElementSuccess({...data.responseObject, elementId, nodeId}));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }
@@ -35,14 +34,13 @@ export function* createElement(action) {
 
 export function* removeElement(action) {
   try {
-    const { elementId, slideId } = action.payload;
+    const { elementId } = action.payload;
     const sessionResponse = yield call(
       [ElementService, ElementService.removeElement],
       elementId,
     );
     const { message } = sessionResponse;
     yield put(actions.removeElementSuccess({ message, elementId }));
-    yield put(actions.getListElements({ slideId }));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }

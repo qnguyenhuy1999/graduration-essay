@@ -55,17 +55,33 @@ const editorSlice = createSlice({
     },
     createElement(state, action: PayloadAction<CreateElement>) {},
     createElementSuccess(state, action: PayloadAction<ResponseNewElement>) {
+      const { newElement, elementId, nodeId, linked } = action.payload;
+      
+      const cloneListElements = [...state.listElements];
+      const elementIndex = cloneListElements.findIndex(element => element.elementId === elementId);
+      const nodeIndex = cloneListElements[elementIndex].nodes?.findIndex(node => node.id === nodeId);
+      console.log(nodeIndex);
+      
+      cloneListElements[elementIndex] = {
+        ...cloneListElements[elementIndex],
+        nodes: [...cloneListElements[elementIndex]?.nodes.slice(0, nodeIndex), {...cloneListElements[elementIndex]?.nodes[nodeIndex], linkId:linked }, ...cloneListElements[elementIndex]?.nodes.slice(nodeIndex + 1)]
+      }
+
       state.createElementResult = action.payload;
+      state.listElements = [...cloneListElements, newElement];
     },
     removeElement(state, action: PayloadAction<RemoveElement>) {},
     removeElementSuccess(state, action: PayloadAction<RemoveElementResponse>) {
       const { message, elementId } = action.payload;
+      const elementIndex  = state.listElements.findIndex(element => element.elementId === elementId);
 
       state.listLines = removeLinesWhenRemoveElement(
         state.listElements,
         state.listLines,
         elementId,
       );
+
+      state.listElements.splice(elementIndex, 1);
 
       state.removeElementResult = message;
     },

@@ -4,7 +4,7 @@ export interface Element {
   caption: string;
   html: string;
   status: 'able' | string;
-  nodes?: Node[];
+  nodes: Node[];
 }
 
 export interface Node {
@@ -14,7 +14,7 @@ export interface Node {
   nodeLinkDefault: number;
   nodeNumber: number;
   caption: string;
-  linkId: 'empty' | 'string';
+  linkId: 'empty' | string;
 }
 
 export interface Position {
@@ -30,7 +30,6 @@ export interface CreateElement {
 
 export interface RemoveElement {
   elementId: string;
-  slideId: string;
 }
 
 export interface RemoveElementResponse {
@@ -38,16 +37,9 @@ export interface RemoveElementResponse {
   message: string;
 }
 
-export interface NewElement {
-  id: string;
-  slideId: string;
-  position: Position;
-  caption: string;
-  html: string;
-  status: 'able' | string;
-}
-
 export interface ResponseNewElement {
-  newElement: NewElement;
-  linked: string;
+  newElement: Element;
+  elementId: string;
+  nodeId: string;
+  linked: string | 'empty';
 }

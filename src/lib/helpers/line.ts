@@ -3,7 +3,6 @@ import { Line } from 'types/line';
 
 export const generateLines = (listElements: Element[]) => {
   const cloneListElements = [...listElements];
-  console.log(cloneListElements);
   let result: Line[] = [];
   for (let i = 0; i < cloneListElements.length - 1; i++) {
     for (let j = i + 1; j < cloneListElements.length; j++) {
