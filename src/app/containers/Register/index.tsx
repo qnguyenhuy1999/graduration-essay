@@ -38,7 +38,15 @@ interface Props {
 interface FormProps extends FormikProps<RegisterFormValues> {}
 
 function LoginForm(props: FormProps & Props) {
-  const { handleChange, handleBlur, handleSubmit, values, dispatch } = props;
+  const {
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    values,
+    dispatch,
+    setSubmitting,
+    isSubmitting,
+  } = props;
   const { registerResult, error } = useSelector(selectRegister);
 
   useEffect(() => {
@@ -50,8 +58,12 @@ function LoginForm(props: FormProps & Props) {
       ToastAlert.error(error);
     }
 
+    if (registerResult || error) {
+      setSubmitting(false);
+    }
+
     dispatch(actions.resetState());
-  }, [dispatch, error, registerResult]);
+  }, [dispatch, error, registerResult, setSubmitting]);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -141,7 +153,12 @@ function LoginForm(props: FormProps & Props) {
         </div>
       </Flex>
 
-      <Button variant="primary" type="submit" width="100%">
+      <Button
+        variant="primary"
+        type="submit"
+        width="100%"
+        loading={isSubmitting}
+      >
         Login
       </Button>
     </form>

@@ -11,7 +11,7 @@ export class SlideServiceFactory extends BaseApiService {
   }
 
   createSlide(name): Promise<ApiResponse> {
-    return this.post('/api/slide/create', { name });
+    return this.post('/api/slide/create', { name, accessModifier: '0' });
   }
 
   resetSlide(slideId): Promise<ApiResponse> {

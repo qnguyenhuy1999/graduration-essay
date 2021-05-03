@@ -2,5 +2,9 @@ export interface Slide {
   id: string;
   name: string;
   status: 'able';
-  accessModifier: 1.0;
+  accessModifier: 1 | 0;
+}
+
+export interface CreateSlideFormValues {
+  name: string;
 }

@@ -114,7 +114,7 @@ const LoginFormik = withFormik<Props, LoginFormValues>({
     email: Yup.string().email().required(),
     password: Yup.string().required(),
   }),
-  handleSubmit: (values, { props, setSubmitting }) => {
+  handleSubmit: (values, { props }) => {
     const { dispatch } = props;
     dispatch(actions.doLogin({ authInfo: values }));
   },

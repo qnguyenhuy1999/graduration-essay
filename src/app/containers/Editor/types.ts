@@ -9,6 +9,7 @@ export interface EditorState {
   createElementResult: ResponseNewElement | null;
   removeElementResult: any;
   resetSlideResult: any;
+  removeLineResult: any;
   error: any;
 }
 

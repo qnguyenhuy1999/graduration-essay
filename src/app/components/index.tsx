@@ -3,6 +3,7 @@ import { FormGroup } from './Form/FormGroup';
 import { FormControl, FormFieldError } from './Form/FormControl';
 import FormLabel from './Form/FormLabel';
 import { Link } from './Link';
+import { Modal } from './Modal';
 
 export {
   Button,
@@ -19,4 +20,5 @@ export {
   FormLabel,
   Link,
   FormFieldError,
+  Modal,
 };

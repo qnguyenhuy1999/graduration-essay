@@ -11,6 +11,10 @@ export class ElementServiceFactory extends BaseApiService {
   createElement(elementId, nodeId): Promise<ApiResponse> {
     return this.post('/api/element/create', { elementId, nodeId });
   }
+
+  updateElement(data): Promise<ApiResponse> {
+    return this.put('/api/element/edit', data);
+  }
 }
 
 export const ElementService = new ElementServiceFactory();

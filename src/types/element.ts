@@ -43,3 +43,26 @@ export interface ResponseNewElement {
   nodeId: string;
   linked: string | 'empty';
 }
+
+export interface SetPositionType {
+  x: number;
+  y: number;
+  elementId: string;
+}
+
+export interface UpdateElement {
+  slideId: string;
+  id: string;
+  position: Position;
+  caption: string;
+  html: string;
+  status: 'able' | string;
+  nodes: Node[];
+}
+
+export interface ResponseNewElement {
+  newElement: Element;
+  elementId: string;
+  nodeId: string;
+  linked: string | 'empty';
+}

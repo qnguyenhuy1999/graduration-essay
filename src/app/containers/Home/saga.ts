@@ -12,6 +12,23 @@ export function* getSlides() {
   }
 }
 
+export function* createSlide(action) {
+  const { name } = action.payload;
+
+  try {
+    const sessionResponse = yield call(
+      [SlideService, SlideService.createSlide],
+      name,
+    );
+    const { data } = sessionResponse;
+    const { responseObject } = data;
+    yield put(actions.createSlideSuccess(responseObject));
+  } catch (err) {
+    yield put(actions.getError(err.data.message));
+  }
+}
+
 export function* homeSaga() {
   yield takeLatest(actions.getSlides.type, getSlides);
+  yield takeLatest(actions.createSlide.type, createSlide);
 }

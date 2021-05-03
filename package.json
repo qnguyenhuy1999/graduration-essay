@@ -48,6 +48,7 @@
     "react": "16.13.1",
     "react-app-polyfill": "1.0.6",
     "react-bootstrap": "1.5.1",
+    "react-click-away-listener": "2.0.2",
     "react-dom": "16.13.1",
     "react-helmet-async": "1.0.6",
     "react-i18next": "11.7.2",

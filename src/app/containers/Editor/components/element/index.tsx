@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styled from '@emotion/styled';
 import { useDispatch } from 'react-redux';
@@ -6,9 +6,10 @@ import { useDispatch } from 'react-redux';
 import { Button, Flex, Span } from 'app/components/Common';
 import { IconWrapper } from 'app/components/Icon';
 import { Close, Edit } from 'app/components/Icon/Common';
-import { Element as ElementType } from 'types/element';
+import { Element as ElementType, Node, Position } from 'types/element';
 import { actions } from '../../slice';
 import ToastAlert from 'lib/services/alert.service';
+import { draggable } from 'lib/helpers/element';
 
 interface Props {
   element: ElementType;
@@ -18,7 +19,22 @@ interface Props {
 export const Element = (props: Props) => {
   const { element, slideId } = props;
   const [isHover, setIsHover] = useState<boolean>(false);
+  const [move, setMove] = useState<number>(0);
+  const [position, setPosition] = useState<Position | null>(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (position?.x && position?.y) {
+      dispatch(
+        actions.setPositionElement({
+          x: position.x,
+          y: position.y,
+          elementId: element.elementId,
+        }),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position]);
 
   const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
   const nodeRight = element.nodes?.find(node => node.nodeNumber === 2);
@@ -26,28 +42,41 @@ export const Element = (props: Props) => {
   const nodeLeft = element.nodes?.find(node => node.nodeNumber === 4);
 
   const createElement = (elementId, node) => {
+    if (move > 0) return;
+
     if (node.linkId !== 'empty') {
       return ToastAlert.error('Node is already linked');
     }
     dispatch(actions.createElement({ elementId, nodeId: node.id, slideId }));
   };
 
-  const startMove = event => {
-    if (!event.shiftKey) {
-      document.addEventListener('mousemove', incMove);
-      document.addEventListener('mouseup', endMove);
-    }
+  const drag = event => {
+    setMove(0);
+    event.stopPropagation();
+    draggable(event, element, setPosition);
+
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
   };
 
-  const incMove = e => {
-    // dispatch(
-    //   actions.updatePositionElement({ element, x: e.pageX, y: e.pageY }),
-    // );
+  const dragMove = () => {
+    setMove(move + 1);
   };
 
-  const endMove = () => {
-    document.removeEventListener('mousemove', incMove);
-    document.removeEventListener('mouseup', endMove);
+  const dragEnd = () => {
+    const data = {
+      position: element.position,
+      caption: element.caption,
+      html: element.html,
+      status: element.status,
+      nodes: element.nodes,
+      id: element.elementId,
+      slideId,
+    };
+
+    dispatch(actions.updateElement(data));
+    document.removeEventListener('mousemove', dragMove);
+    document.removeEventListener('mouseup', dragEnd);
   };
 
   return (
@@ -55,10 +84,9 @@ export const Element = (props: Props) => {
       className={classNames('element-container-item', { hover: isHover })}
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
-      onDrag={startMove}
+      onMouseDown={drag}
       isHover={isHover}
-      style={{ left: element?.position.x, top: element?.position.y }}
-      draggable="true"
+      style={{ left: element.position.x, top: element.position.y }}
     >
       <NodeElement className="element">
         {nodeTop && (
@@ -102,9 +130,7 @@ export const Element = (props: Props) => {
         <Button
           variant="warning"
           onClick={() =>
-            dispatch(
-              actions.removeElement({ elementId: element.elementId }),
-            )
+            dispatch(actions.removeElement({ elementId: element.elementId }))
           }
         >
           <IconWrapper icon={Close} fill="primaryWhite" />

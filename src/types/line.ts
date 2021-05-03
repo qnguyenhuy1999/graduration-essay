@@ -3,3 +3,8 @@ export interface Line {
   from: string;
   to: string;
 }
+export interface RemoveLine {
+  linkId: string;
+}
+
+

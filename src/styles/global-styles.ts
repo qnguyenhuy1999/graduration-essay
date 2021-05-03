@@ -43,4 +43,25 @@ export const GlobalStyle = createGlobalStyle`
     width: 100%;
     height: 100%;
   }
+
+  .modal-center {
+    &.first-modal-layer {
+      z-index: 1040;
+    }
+    &.fade .modal-dialog {
+      transform: translate(-50%, calc(-50% - 50px));
+    }
+    &.show .modal-dialog {
+      transform: translate(-50%, -50%);
+    }
+
+    .modal-dialog {
+      position: absolute;
+      float: left;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+    }
+  }
 `;

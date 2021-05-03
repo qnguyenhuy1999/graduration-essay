@@ -25,12 +25,20 @@ export const Header = () => {
         {slideId && (
           <Flex alignItems="center">
             <Span variant="body">
-              <NavLink exact to="/editor" mr="s" activeStyle={activeLink}>
+              <NavLink
+                exact
+                to={`/slide/${slideId}/editor`}
+                mr="s"
+                activeStyle={activeLink}
+              >
                 Route editor
               </NavLink>
             </Span>
             <Span variant="body">
-              <NavLink to="/presentation" activeStyle={activeLink}>
+              <NavLink
+                to={`/slide/${slideId}/presentation`}
+                activeStyle={activeLink}
+              >
                 Presentation
               </NavLink>
             </Span>

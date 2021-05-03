@@ -1,16 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
+import ClickAwayListener from 'react-click-away-listener';
 
 import { Line as LineType } from 'types/line';
 import { Position } from 'types/element';
 import { selectEditor } from '../../selectors';
 import { getElementAndNodeForLine, getPosLink } from 'lib/helpers/line';
 import { convertNumberToDirection } from 'lib/helpers/element';
+import { actions } from '../../slice';
 
 interface Props {
   line: LineType;
 }
+
+const linkSelectedLink = {
+  stroke: 'red',
+  strokeDasharray: 10,
+  animation: 'selectLink 20s linear infinite',
+};
 
 export const Line = (props: Props) => {
   const { line } = props;
@@ -18,6 +26,7 @@ export const Line = (props: Props) => {
   const [positionEnd, setPositionEnd] = useState<Position | null>(null);
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const { listElements } = useSelector(selectEditor);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (listElements?.length > 0) {
@@ -41,15 +50,24 @@ export const Line = (props: Props) => {
   }, [line, listElements]);
 
   return (
-    <LineStyled
-      markerStart="url(#markerCircle)"
-      markerEnd="url(#markerCircle)"
-      x1={positionStart?.x}
-      y1={positionStart?.y}
-      x2={positionEnd?.x}
-      y2={positionEnd?.y}
-      onClick={() => setIsSelected(!isSelected)}
-    />
+    <ClickAwayListener onClickAway={() => setIsSelected(false)}>
+      <LineStyled
+        markerStart="url(#markerCircle)"
+        markerEnd="url(#markerCircle)"
+        x1={positionStart?.x}
+        y1={positionStart?.y}
+        x2={positionEnd?.x}
+        y2={positionEnd?.y}
+        onClick={() => setIsSelected(!isSelected)}
+        onKeyDown={e => {
+          if (isSelected && (e.key === 'Delete' || e.key === 'Backspace')) {
+            dispatch(actions.removeLine({ linkId: line.linkId }));
+          }
+        }}
+        style={isSelected ? linkSelectedLink : null}
+        tabIndex="0"
+      />
+    </ClickAwayListener>
   );
 };
 
@@ -57,4 +75,14 @@ const LineStyled = styled.line<any>`
   stroke: ${p => p.theme.colors.primaryBlack};
   stroke-width: 3px;
   cursor: pointer;
+
+  :focus {
+    outline: none;
+  }
+
+  @keyframes selectLink {
+    to {
+      stroke-dashoffset: -100%;
+    }
+  }
 `;

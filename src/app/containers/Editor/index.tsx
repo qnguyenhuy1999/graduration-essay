@@ -20,7 +20,7 @@ import { Element } from './components/element';
 import { Line } from './components/line';
 import { ProtectedLayout } from '../ProtectedLayout';
 import ToastAlert from 'lib/services/alert.service';
-import { generateLines } from '../../../lib/helpers/line';
+import { generateLines } from 'lib/helpers/line';
 
 export const Editor = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
@@ -31,6 +31,8 @@ export const Editor = () => {
     listLines,
     createElementResult,
     removeElementResult,
+    resetSlideResult,
+    removeLineResult,
     error,
   } = useSelector(selectEditor);
   const dispatch = useDispatch();
@@ -57,15 +59,33 @@ export const Editor = () => {
       dispatch(actions.resetStateResult());
     }
 
+    if (resetSlideResult) {
+      ToastAlert.success('Element successfully reset');
+      dispatch(actions.resetStateResult());
+    }
+
+    if (removeLineResult) {
+      ToastAlert.success('Line successfully deleted');
+      dispatch(actions.resetStateResult());
+    }
+
     if (error) {
       ToastAlert.error(error);
       dispatch(actions.resetStateResult());
     }
-  }, [createElementResult, dispatch, error, removeElementResult, slideId]);
+  }, [
+    createElementResult,
+    dispatch,
+    error,
+    removeElementResult,
+    removeLineResult,
+    resetSlideResult,
+    slideId,
+  ]);
 
   return (
     <ProtectedLayout>
-      <HomeWrapper onDragOver={e => e.preventDefault()}>
+      <HomeWrapper>
         <Helmet>
           <title>Home</title>
           <meta name="description" content="Description of Home" />

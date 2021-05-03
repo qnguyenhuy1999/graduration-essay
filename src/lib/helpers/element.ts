@@ -19,3 +19,24 @@ const convertNumberToDirection = number => {
 };
 
 export { convertNumberToDirection };
+
+export const draggable = ({ pageX, pageY }, item, setPosition) => {
+  let drag = { x: pageX, y: pageY };
+  let { x, y } = item.position;
+
+  let dragMove = ({ pageX, pageY }) => {
+    x -= drag.x - pageX;
+    y -= drag.y - pageY;
+    setPosition({ x, y });
+
+    drag = { x: pageX, y: pageY };
+  };
+
+  let dragEnd = () => {
+    document.removeEventListener('mousemove', dragMove);
+    document.removeEventListener('mouseup', dragEnd);
+  };
+
+  document.addEventListener('mousemove', dragMove);
+  document.addEventListener('mouseup', dragEnd);
+};
