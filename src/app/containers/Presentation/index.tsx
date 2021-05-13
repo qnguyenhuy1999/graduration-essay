@@ -18,9 +18,9 @@ export const Presentation = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: presentationSaga });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-Line @typescript-eslint/no-unused-vars
   const presentation = useSelector(selectPresentation);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-Line @typescript-eslint/no-unused-vars
   const dispatch = useDispatch();
 
   return (

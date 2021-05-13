@@ -6,10 +6,11 @@ import { useDispatch } from 'react-redux';
 import { Button, Flex, Span } from 'app/components/Common';
 import { IconWrapper } from 'app/components/Icon';
 import { Close, Edit } from 'app/components/Icon/Common';
-import { Element as ElementType, Node, Position } from 'types/element';
+import { Element as ElementType, Position } from 'types/element';
 import { actions } from '../../slice';
 import ToastAlert from 'lib/services/alert.service';
 import { draggable } from 'lib/helpers/element';
+import { EditElementModal } from './components/EditElementModal';
 
 interface Props {
   element: ElementType;
@@ -21,6 +22,7 @@ export const Element = (props: Props) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [move, setMove] = useState<number>(0);
   const [position, setPosition] = useState<Position | null>(null);
+  const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export const Element = (props: Props) => {
         }),
       );
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-Line react-hooks/exhaustive-deps
   }, [position]);
 
   const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
@@ -47,12 +49,13 @@ export const Element = (props: Props) => {
     if (node.linkId !== 'empty') {
       return ToastAlert.error('Node is already linked');
     }
+
     dispatch(actions.createElement({ elementId, nodeId: node.id, slideId }));
   };
 
   const drag = event => {
-    setMove(0);
     event.stopPropagation();
+    setMove(0);
     draggable(event, element, setPosition);
 
     document.addEventListener('mousemove', dragMove);
@@ -64,24 +67,37 @@ export const Element = (props: Props) => {
   };
 
   const dragEnd = () => {
-    const data = {
-      position: element.position,
-      caption: element.caption,
-      html: element.html,
-      status: element.status,
-      nodes: element.nodes,
-      id: element.elementId,
-      slideId,
-    };
+    if (move > 0) {
+      const data = {
+        position: element.position,
+        caption: element.caption,
+        html: element.html,
+        status: element.status,
+        nodes: element.nodes.map(node => {
+          return {
+            id: node.id,
+            caption: node.caption,
+          };
+        }),
+        elementId: element.elementId,
+        slideId,
+      };
 
-    dispatch(actions.updateElement(data));
+      dispatch(actions.updateElement(data));
+      setMove(0);
+    }
+
     document.removeEventListener('mousemove', dragMove);
     document.removeEventListener('mouseup', dragEnd);
   };
 
+  const handleCloseEditModal = () => {
+    setIsVisibleModal(false);
+  };
+
   return (
     <ElementContainerItem
-      className={classNames('element-container-item', { hover: isHover })}
+      className={classNames('Element-container-item', { hover: isHover })}
       onMouseOver={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
       onMouseDown={drag}
@@ -124,7 +140,11 @@ export const Element = (props: Props) => {
       </NodeElement>
 
       <Controls justifyContent="space-between" pt="s" className="controls">
-        <Button variant="primary" mr="xs">
+        <Button
+          variant="primary"
+          mr="xs"
+          onClick={() => setIsVisibleModal(true)}
+        >
           <IconWrapper icon={Edit} fill="primaryWhite" />
         </Button>
         <Button
@@ -136,6 +156,12 @@ export const Element = (props: Props) => {
           <IconWrapper icon={Close} fill="primaryWhite" />
         </Button>
       </Controls>
+      <EditElementModal
+        html={element.html}
+        handleChangeHTML={data => console.log(data)}
+        visible={isVisibleModal}
+        handleClose={handleCloseEditModal}
+      />
     </ElementContainerItem>
   );
 };

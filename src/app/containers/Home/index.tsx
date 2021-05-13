@@ -28,7 +28,7 @@ export function Home() {
 
   useEffect(() => {
     dispatch(actions.getSlides());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-Line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

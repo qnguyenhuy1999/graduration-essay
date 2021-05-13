@@ -50,14 +50,19 @@ export interface SetPositionType {
   elementId: string;
 }
 
+export interface NodeUpdate {
+  id: string;
+  caption: string;
+}
+
 export interface UpdateElement {
   slideId: string;
-  id: string;
+  elementId: string;
   position: Position;
   caption: string;
   html: string;
   status: 'able' | string;
-  nodes: Node[];
+  nodes: NodeUpdate[];
 }
 
 export interface ResponseNewElement {

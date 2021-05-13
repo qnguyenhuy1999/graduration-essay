@@ -16,8 +16,8 @@ import { selectEditor } from './selectors';
 import { editorSaga } from './saga';
 
 import { Button } from 'app/components/Common';
-import { Element } from './components/element';
-import { Line } from './components/line';
+import { Element } from './components/Element';
+import { Line } from './components/Line';
 import { ProtectedLayout } from '../ProtectedLayout';
 import ToastAlert from 'lib/services/alert.service';
 import { generateLines } from 'lib/helpers/line';
@@ -40,12 +40,12 @@ export const Editor = () => {
 
   useEffect(() => {
     dispatch(actions.getListElements({ slideId }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-Line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     dispatch(actions.setListLines(generateLines(listElements)));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-Line react-hooks/exhaustive-deps
   }, [listElements]);
 
   useEffect(() => {
