@@ -71,3 +71,13 @@ export interface ResponseNewElement {
   nodeId: string;
   linked: string | 'empty';
 }
+
+export interface EditElementFormValues {
+  html: any;
+  content: {
+    top: NodeUpdate;
+    right: NodeUpdate;
+    bottom: NodeUpdate;
+    left: NodeUpdate;
+  } | null;
+}

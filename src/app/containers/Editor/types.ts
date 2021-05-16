@@ -10,6 +10,7 @@ export interface EditorState {
   removeElementResult: any;
   resetSlideResult: any;
   removeLineResult: any;
+  updateElementResult: any;
   error: any;
 }
 

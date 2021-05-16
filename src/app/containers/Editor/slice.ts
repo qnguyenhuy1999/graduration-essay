@@ -22,6 +22,7 @@ export const initialState: ContainerState = {
   removeElementResult: null,
   resetSlideResult: null,
   removeLineResult: null,
+  updateElementResult: null,
   error: null,
 };
 
@@ -158,7 +159,7 @@ const editorSlice = createSlice({
 
       cloneListElements[elementIndex] = updateElement;
 
-      state.createElementResult = action.payload;
+      state.updateElementResult = action.payload;
       state.listElements = cloneListElements;
     },
 
@@ -176,6 +177,7 @@ const editorSlice = createSlice({
       state.removeElementResult = initialState.removeElementResult;
       state.resetSlideResult = initialState.resetSlideResult;
       state.removeLineResult = initialState.removeLineResult;
+      state.updateElementResult = initialState.updateElementResult;
     },
     resetState() {
       return { ...initialState };

@@ -9,8 +9,8 @@ import { Close, Edit } from 'app/components/Icon/Common';
 import { Element as ElementType, Position } from 'types/element';
 import { actions } from '../../slice';
 import ToastAlert from 'lib/services/alert.service';
-import { draggable } from 'lib/helpers/element';
 import { EditElementModal } from './components/EditElementModal';
+import { DragElement } from 'app/components/DragElement';
 
 interface Props {
   element: ElementType;
@@ -20,31 +20,25 @@ interface Props {
 export const Element = (props: Props) => {
   const { element, slideId } = props;
   const [isHover, setIsHover] = useState<boolean>(false);
-  const [move, setMove] = useState<number>(0);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [position, setPosition] = useState<Position | null>(null);
   const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (position?.x && position?.y) {
-      dispatch(
-        actions.setPositionElement({
-          x: position.x,
-          y: position.y,
-          elementId: element.elementId,
-        }),
-      );
-    }
-    // eslint-disable-next-Line react-hooks/exhaustive-deps
-  }, [position]);
+    setPosition({
+      x: element.position.x,
+      y: element.position.y,
+    });
+  }, [element.position.x, element.position.y]);
 
   const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
   const nodeRight = element.nodes?.find(node => node.nodeNumber === 2);
   const nodeBottom = element.nodes?.find(node => node.nodeNumber === 3);
   const nodeLeft = element.nodes?.find(node => node.nodeNumber === 4);
 
-  const createElement = (elementId, node) => {
-    if (move > 0) return;
+  const createElement = (e, elementId, node) => {
+    if (isDragging) return;
 
     if (node.linkId !== 'empty') {
       return ToastAlert.error('Node is already linked');
@@ -53,120 +47,129 @@ export const Element = (props: Props) => {
     dispatch(actions.createElement({ elementId, nodeId: node.id, slideId }));
   };
 
-  const drag = event => {
-    event.stopPropagation();
-    setMove(0);
-    draggable(event, element, setPosition);
-
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('mouseup', dragEnd);
-  };
-
-  const dragMove = () => {
-    setMove(move + 1);
-  };
-
-  const dragEnd = () => {
-    if (move > 0) {
-      const data = {
-        position: element.position,
-        caption: element.caption,
-        html: element.html,
-        status: element.status,
-        nodes: element.nodes.map(node => {
-          return {
-            id: node.id,
-            caption: node.caption,
-          };
-        }),
-        elementId: element.elementId,
-        slideId,
-      };
-
-      dispatch(actions.updateElement(data));
-      setMove(0);
-    }
-
-    document.removeEventListener('mousemove', dragMove);
-    document.removeEventListener('mouseup', dragEnd);
-  };
-
   const handleCloseEditModal = () => {
     setIsVisibleModal(false);
   };
 
-  return (
-    <ElementContainerItem
-      className={classNames('Element-container-item', { hover: isHover })}
-      onMouseOver={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-      onMouseDown={drag}
-      isHover={isHover}
-      style={{ left: element.position.x, top: element.position.y }}
-    >
-      <NodeElement className="element">
-        {nodeTop && (
-          <div
-            className="path"
-            onClick={() => createElement(element.elementId, nodeTop)}
-          >
-            <Span>1</Span>
-          </div>
-        )}
-        {nodeRight && (
-          <div
-            className="path"
-            onClick={() => createElement(element.elementId, nodeRight)}
-          >
-            <Span>2</Span>
-          </div>
-        )}
-        {nodeLeft && (
-          <div
-            className="path"
-            onClick={() => createElement(element.elementId, nodeLeft)}
-          >
-            <Span>4</Span>
-          </div>
-        )}
-        {nodeBottom && (
-          <div
-            className="path"
-            onClick={() => createElement(element.elementId, nodeBottom)}
-          >
-            <Span>3</Span>
-          </div>
-        )}
-      </NodeElement>
+  const updateContentElement = payload => {
+    const data = {
+      position: element.position,
+      caption: element.caption,
+      status: element.status,
+      elementId: element.elementId,
+      slideId,
+      ...payload,
+    };
+    dispatch(actions.updateElement(data));
+  };
 
-      <Controls justifyContent="space-between" pt="s" className="controls">
-        <Button
-          variant="primary"
-          mr="xs"
-          onClick={() => setIsVisibleModal(true)}
-        >
-          <IconWrapper icon={Edit} fill="primaryWhite" />
-        </Button>
-        <Button
-          variant="warning"
-          onClick={() =>
-            dispatch(actions.removeElement({ elementId: element.elementId }))
-          }
-        >
-          <IconWrapper icon={Close} fill="primaryWhite" />
-        </Button>
-      </Controls>
-      <EditElementModal
-        html={element.html}
-        handleChangeHTML={data => console.log(data)}
-        visible={isVisibleModal}
-        handleClose={handleCloseEditModal}
-      />
-    </ElementContainerItem>
+  const handleDrag = position => {
+    dispatch(
+      actions.setPositionElement({
+        ...position,
+        elementId: element.elementId,
+      }),
+    );
+  };
+
+  const handleEndMove = position => {
+    const data = {
+      position,
+      caption: element.caption,
+      html: element.html,
+      status: element.status,
+      nodes: element.nodes.map(node => {
+        return {
+          id: node.id,
+          caption: node.caption,
+        };
+      }),
+      elementId: element.elementId,
+      slideId,
+    };
+
+    dispatch(actions.updateElement(data));
+  };
+
+  return (
+    <DragElement
+      initialPos={position}
+      handleDrag={handleDrag}
+      handleEndMove={handleEndMove}
+      setIsDragging={setIsDragging}
+    >
+      <ElementContainerItem
+        className={classNames('element-container-item', {
+          hover: isHover,
+        })}
+        onMouseOver={() => setIsHover(true)}
+        onMouseLeave={() => setIsHover(false)}
+        isHover={isHover}
+      >
+        <NodeElement className="element">
+          {nodeTop && (
+            <div
+              className="path"
+              onClick={e => createElement(e, element.elementId, nodeTop)}
+            >
+              <Span>1</Span>
+            </div>
+          )}
+          {nodeRight && (
+            <div
+              className="path"
+              onClick={e => createElement(e, element.elementId, nodeRight)}
+            >
+              <Span>2</Span>
+            </div>
+          )}
+          {nodeLeft && (
+            <div
+              className="path"
+              onClick={e => createElement(e, element.elementId, nodeLeft)}
+            >
+              <Span>4</Span>
+            </div>
+          )}
+          {nodeBottom && (
+            <div
+              className="path"
+              onClick={e => createElement(e, element.elementId, nodeBottom)}
+            >
+              <Span>3</Span>
+            </div>
+          )}
+        </NodeElement>
+
+        <Controls justifyContent="space-between" pt="s" className="controls">
+          <Button
+            variant="primary"
+            mr="xs"
+            onClick={() => setIsVisibleModal(true)}
+          >
+            <IconWrapper icon={Edit} fill="primaryWhite" />
+          </Button>
+          <Button
+            variant="warning"
+            onClick={() =>
+              dispatch(actions.removeElement({ elementId: element.elementId }))
+            }
+          >
+            <IconWrapper icon={Close} fill="primaryWhite" />
+          </Button>
+        </Controls>
+        <EditElementModal
+          updateContentElement={updateContentElement}
+          element={element}
+          visible={isVisibleModal}
+          handleClose={handleCloseEditModal}
+        />
+      </ElementContainerItem>
+    </DragElement>
   );
 };
 
-const ElementContainerItem = styled.div<any>`
+export const ElementContainerItem = styled.div<any>`
   width: 100px;
   height: 100px;
   position: absolute;
@@ -179,9 +182,10 @@ const ElementContainerItem = styled.div<any>`
   .controls {
     opacity: ${p => p.isHover && 1};
   }
+  animation: fadeIn 0.5s forwards;
 `;
 
-const NodeElement = styled.div`
+export const NodeElement = styled.div`
   height: 100%;
   border-radius: 50%;
   display: grid;

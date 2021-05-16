@@ -71,10 +71,11 @@ export const Line = (props: Props) => {
   );
 };
 
-const LineStyled = styled.line<any>`
+export const LineStyled = styled.line<any>`
   stroke: ${p => p.theme.colors.primaryBlack};
   stroke-width: 3px;
   cursor: pointer;
+  animation: initLink 0.5s forwards;
 
   :focus {
     outline: none;

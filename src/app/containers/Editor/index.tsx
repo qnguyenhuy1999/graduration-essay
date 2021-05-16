@@ -30,6 +30,7 @@ export const Editor = () => {
     listElements,
     listLines,
     createElementResult,
+    updateElementResult,
     removeElementResult,
     resetSlideResult,
     removeLineResult,
@@ -40,17 +41,22 @@ export const Editor = () => {
 
   useEffect(() => {
     dispatch(actions.getListElements({ slideId }));
-    // eslint-disable-next-Line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     dispatch(actions.setListLines(generateLines(listElements)));
-    // eslint-disable-next-Line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listElements]);
 
   useEffect(() => {
     if (createElementResult) {
       ToastAlert.success('Element successfully created');
+      dispatch(actions.resetStateResult());
+    }
+
+    if (updateElementResult) {
+      ToastAlert.success('Element successfully updated');
       dispatch(actions.resetStateResult());
     }
 
@@ -81,6 +87,7 @@ export const Editor = () => {
     removeLineResult,
     resetSlideResult,
     slideId,
+    updateElementResult,
   ]);
 
   return (

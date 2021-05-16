@@ -23,7 +23,7 @@ export function Auth(props) {
 
   useEffect(() => {
     dispatch(actions.getCurrentUser());
-    // eslint-disable-next-Line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return auth.isAuthLoaded ? props.children : <div />;
