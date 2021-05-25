@@ -3,7 +3,7 @@ import { BaseApiService } from './axios.service';
 
 export class AuthServiceFactory extends BaseApiService {
   getCurrentUser(): Promise<ApiResponse> {
-    return this.get('/api/current-user');
+    return this.get('/api/user/current-user');
   }
 
   login(loginInfo: LoginFormValues): Promise<ApiResponse> {

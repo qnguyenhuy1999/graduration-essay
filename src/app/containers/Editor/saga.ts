@@ -99,6 +99,20 @@ export function* updateElement(action) {
   }
 }
 
+export function* createLine(action) {
+  try {
+    const sessionResponse = yield call(
+      [ElementService, ElementService.updateElement],
+      action.payload,
+    );
+    const { data } = sessionResponse;
+    const { responseObject } = data;
+    yield put(actions.updateElementSuccess({ responseObject }));
+  } catch (err) {
+    yield put(actions.getError(err.data.message));
+  }
+}
+
 export function* editorSaga() {
   yield takeLatest(actions.getListElements.type, getListElements);
   yield takeLatest(actions.createElement.type, createElement);

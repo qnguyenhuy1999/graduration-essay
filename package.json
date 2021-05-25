@@ -54,6 +54,7 @@
     "react-click-away-listener": "2.0.2",
     "react-dom": "16.13.1",
     "react-draft-wysiwyg": "1.14.7",
+    "react-draggable": "4.4.3",
     "react-helmet-async": "1.0.6",
     "react-i18next": "11.7.2",
     "react-redux": "7.2.1",

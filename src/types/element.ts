@@ -81,3 +81,9 @@ export interface EditElementFormValues {
     left: NodeUpdate;
   } | null;
 }
+
+export interface CloneElement {
+  position: Position;
+  elementId: string;
+  nodeId: string;
+}

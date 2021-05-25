@@ -62,6 +62,7 @@ export const Line = (props: Props) => {
         onKeyDown={e => {
           if (isSelected && (e.key === 'Delete' || e.key === 'Backspace')) {
             dispatch(actions.removeLine({ linkId: line.linkId }));
+            setIsSelected(false);
           }
         }}
         style={isSelected ? linkSelectedLink : null}

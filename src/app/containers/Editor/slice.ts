@@ -11,7 +11,7 @@ import {
   SetPositionType,
   UpdateElement,
 } from 'types/element';
-import { Line, RemoveLine } from 'types/line';
+import { CreateLine, Line, RemoveLine } from 'types/line';
 
 // The initial state of the Editor container
 export const initialState: ContainerState = {
@@ -22,6 +22,7 @@ export const initialState: ContainerState = {
   removeElementResult: null,
   resetSlideResult: null,
   removeLineResult: null,
+  createLineResult: null,
   updateElementResult: null,
   error: null,
 };
@@ -166,6 +167,11 @@ const editorSlice = createSlice({
     resetSlide(state, action: PayloadAction<{ slideId: string }>) {},
     resetSlideSuccess(state, action: PayloadAction<any>) {
       state.resetSlideResult = action.payload;
+    },
+
+    createLine(state, action: PayloadAction<CreateLine>) {},
+    createLineSuccess(state, action: PayloadAction<any>) {
+      state.createLineResult = action.payload;
     },
 
     getError(state, action: PayloadAction<any>) {

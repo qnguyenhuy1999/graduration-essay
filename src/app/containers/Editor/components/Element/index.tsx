@@ -2,40 +2,52 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styled from '@emotion/styled';
 import { useDispatch } from 'react-redux';
+import Draggable from 'react-draggable';
 
 import { Button, Flex, Span } from 'app/components/Common';
 import { IconWrapper } from 'app/components/Icon';
 import { Close, Edit } from 'app/components/Icon/Common';
-import { Element as ElementType, Position } from 'types/element';
+import { CloneElement, Element as ElementType, Position } from 'types/element';
 import { actions } from '../../slice';
 import ToastAlert from 'lib/services/alert.service';
 import { EditElementModal } from './components/EditElementModal';
-import { DragElement } from 'app/components/DragElement';
 
 interface Props {
   element: ElementType;
   slideId: string;
+  isDragging: boolean;
+  setIsDragging: any;
+  makeClone: (number, cloneElement: CloneElement) => void;
+  saveClone: any;
+  numberClone: number;
 }
 
 export const Element = (props: Props) => {
-  const { element, slideId } = props;
+  const {
+    element,
+    slideId,
+    isDragging,
+    setIsDragging,
+    makeClone,
+    saveClone,
+    numberClone,
+  } = props;
   const [isHover, setIsHover] = useState<boolean>(false);
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [position, setPosition] = useState<Position | null>(null);
   const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    setPosition({
-      x: element.position.x,
-      y: element.position.y,
-    });
-  }, [element.position.x, element.position.y]);
 
   const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
   const nodeRight = element.nodes?.find(node => node.nodeNumber === 2);
   const nodeBottom = element.nodes?.find(node => node.nodeNumber === 3);
   const nodeLeft = element.nodes?.find(node => node.nodeNumber === 4);
+
+  useEffect(() => {
+    if (numberClone) {
+      setIsHover(true);
+    } else {
+      setIsHover(false);
+    }
+  }, [numberClone]);
 
   const createElement = (e, elementId, node) => {
     if (isDragging) return;
@@ -63,41 +75,49 @@ export const Element = (props: Props) => {
     dispatch(actions.updateElement(data));
   };
 
-  const handleDrag = position => {
-    dispatch(
-      actions.setPositionElement({
-        ...position,
-        elementId: element.elementId,
-      }),
-    );
+  const handleDrag = (e, ui) => {
+    if (e.type === 'mousemove') {
+      const { x, y } = element.position;
+      dispatch(
+        actions.setPositionElement({
+          x: x + ui.deltaX,
+          y: y + ui.deltaY,
+          elementId: element.elementId,
+        }),
+      );
+      setIsDragging(true);
+    }
   };
 
-  const handleEndMove = position => {
-    const data = {
-      position,
-      caption: element.caption,
-      html: element.html,
-      status: element.status,
-      nodes: element.nodes.map(node => {
-        return {
-          id: node.id,
-          caption: node.caption,
-        };
-      }),
-      elementId: element.elementId,
-      slideId,
-    };
+  const handleStop = e => {
+    if (e.type === 'mouseup' && isDragging) {
+      const data = {
+        position: {
+          x: element.position.x,
+          y: element.position.y,
+        },
+        caption: element.caption,
+        html: element.html,
+        status: element.status,
+        nodes: element.nodes.map(node => {
+          return {
+            id: node.id,
+            caption: node.caption,
+          };
+        }),
+        elementId: element.elementId,
+        slideId,
+      };
 
-    dispatch(actions.updateElement(data));
+      dispatch(actions.updateElement(data));
+      setTimeout(() => {
+        setIsDragging(false);
+      }, 500);
+    }
   };
 
   return (
-    <DragElement
-      initialPos={position}
-      handleDrag={handleDrag}
-      handleEndMove={handleEndMove}
-      setIsDragging={setIsDragging}
-    >
+    <Draggable onStop={handleStop} onDrag={handleDrag}>
       <ElementContainerItem
         className={classNames('element-container-item', {
           hover: isHover,
@@ -105,12 +125,30 @@ export const Element = (props: Props) => {
         onMouseOver={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
         isHover={isHover}
+        position={element.position}
       >
         <NodeElement className="element">
           {nodeTop && (
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeTop)}
+              onMouseDown={e => {
+                if (e.shiftKey) {
+                  e.stopPropagation();
+                  makeClone(1, {
+                    position: { x: e.clientX - 50, y: e.clientY - 50 },
+                    elementId: element.elementId,
+                    nodeId: nodeTop.id,
+                  });
+                }
+              }}
+              onMouseUp={e => {
+                saveClone({
+                  position: { x: 0, y: 0 },
+                  elementId: element.elementId,
+                  nodeId: nodeTop.id,
+                });
+              }}
             >
               <Span>1</Span>
             </div>
@@ -119,6 +157,22 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeRight)}
+              onMouseDown={e => {
+                if (e.shiftKey) {
+                  makeClone(2, {
+                    position: { x: e.clientX - 50, y: e.clientY - 50 },
+                    elementId: element.elementId,
+                    nodeId: nodeRight.id,
+                  });
+                }
+              }}
+              onMouseUp={e => {
+                saveClone({
+                  position: { x: 0, y: 0 },
+                  elementId: element.elementId,
+                  nodeId: nodeRight.id,
+                });
+              }}
             >
               <Span>2</Span>
             </div>
@@ -127,6 +181,23 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeLeft)}
+              onMouseDown={e => {
+                if (e.shiftKey) {
+                  e.stopPropagation();
+                  makeClone(4, {
+                    position: { x: e.clientX - 50, y: e.clientY - 50 },
+                    elementId: element.elementId,
+                    nodeId: nodeLeft.id,
+                  });
+                }
+              }}
+              onMouseUp={e => {
+                saveClone({
+                  position: { x: 0, y: 0 },
+                  elementId: element.elementId,
+                  nodeId: nodeLeft.id,
+                });
+              }}
             >
               <Span>4</Span>
             </div>
@@ -135,6 +206,23 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeBottom)}
+              onMouseDown={e => {
+                if (e.shiftKey) {
+                  e.stopPropagation();
+                  makeClone(3, {
+                    position: { x: e.clientX - 50, y: e.clientY - 50 },
+                    elementId: element.elementId,
+                    nodeId: nodeBottom.id,
+                  });
+                }
+              }}
+              onMouseUp={e => {
+                saveClone({
+                  position: { x: 0, y: 0 },
+                  elementId: element.elementId,
+                  nodeId: nodeBottom.id,
+                });
+              }}
             >
               <Span>3</Span>
             </div>
@@ -165,7 +253,7 @@ export const Element = (props: Props) => {
           handleClose={handleCloseEditModal}
         />
       </ElementContainerItem>
-    </DragElement>
+    </Draggable>
   );
 };
 
@@ -173,7 +261,9 @@ export const ElementContainerItem = styled.div<any>`
   width: 100px;
   height: 100px;
   position: absolute;
-  transform: translate(-50%, -50%);
+  left: ${p => p.position?.x}px;
+  top: ${p => p.position?.y}px;
+  transform: translate(-50%, -50%) !important;
   border-radius: 50%;
   background: #fff;
   border: 3px solid;

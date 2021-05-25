@@ -4,11 +4,12 @@
  *
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from '@emotion/styled';
+import Draggable from 'react-draggable';
 
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { reducer, sliceKey, actions } from './slice';
@@ -21,6 +22,7 @@ import { Line } from './components/Line';
 import { ProtectedLayout } from '../ProtectedLayout';
 import ToastAlert from 'lib/services/alert.service';
 import { generateLines } from 'lib/helpers/line';
+import { CloneElement, Position } from 'types/element';
 
 export const Editor = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
@@ -38,6 +40,9 @@ export const Editor = () => {
   } = useSelector(selectEditor);
   const dispatch = useDispatch();
   const { slideId } = useParams<{ slideId: string }>();
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [numberClone, setNumberClone] = useState<number>(0);
+  const [cloneElement, setCloneElement] = useState<CloneElement | null>(null);
 
   useEffect(() => {
     dispatch(actions.getListElements({ slideId }));
@@ -56,7 +61,6 @@ export const Editor = () => {
     }
 
     if (updateElementResult) {
-      ToastAlert.success('Element successfully updated');
       dispatch(actions.resetStateResult());
     }
 
@@ -90,6 +94,28 @@ export const Editor = () => {
     updateElementResult,
   ]);
 
+  const makeClone = (number: number, cloneElement: CloneElement) => {
+    setNumberClone(number);
+    setCloneElement(cloneElement);
+  };
+
+  const saveClone = (cloneNewElement: CloneElement) => {
+    dispatch(
+      actions.createLine({
+        eSource: cloneElement?.elementId || '',
+        nSource: cloneElement?.nodeId || '',
+        eTarget: cloneNewElement?.elementId || '',
+        nTarget: cloneNewElement?.nodeId || '',
+      }),
+    );
+  };
+
+  const handleStop = e => {
+    console.log(e.target);
+    setNumberClone(0);
+    setCloneElement(null);
+  };
+
   return (
     <ProtectedLayout>
       <HomeWrapper>
@@ -110,6 +136,11 @@ export const Editor = () => {
               element={element}
               slideId={slideId}
               key={element.elementId}
+              isDragging={isDragging}
+              setIsDragging={setIsDragging}
+              makeClone={makeClone}
+              saveClone={saveClone}
+              numberClone={numberClone}
             />
           ))}
 
@@ -132,6 +163,27 @@ export const Editor = () => {
           {listLines.length > 0 &&
             listLines.map((line, index) => <Line line={line} key={index} />)}
         </svg>
+
+        {numberClone && cloneElement?.elementId && (
+          <Draggable
+            onStop={handleStop}
+            onDrag={(event, data) => {
+              if (event.shiftKey) {
+                setCloneElement({
+                  ...cloneElement,
+                  position: {
+                    x: cloneElement?.position.x + data.deltaX,
+                    y: cloneElement?.position.y + data.deltaY,
+                  },
+                });
+              }
+            }}
+          >
+            <CloneStyled position={cloneElement?.position}>
+              {numberClone}
+            </CloneStyled>
+          </Draggable>
+        )}
       </HomeWrapper>
     </ProtectedLayout>
   );
@@ -147,4 +199,21 @@ const ButtonWrapper = styled.div`
   position: absolute;
   top: 15px;
   right: 0;
+`;
+
+const CloneStyled = styled.div<any>`
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${props => props.theme.colors.primaryBlue};
+  color: ${props => props.theme.colors.primaryWhite};
+  top: ${props => props.position?.y}px;
+  left: ${props => props.position?.x}px;
+  transform: translate(calc(-150% + 10px), calc(-150% + 5px)) !important;
+  //pointer-events: none;
+  z-index: 10;
 `;
