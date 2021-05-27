@@ -9,7 +9,8 @@ export function* getCurrentUser() {
       AuthService,
       AuthService.getCurrentUser,
     ]);
-    yield put(actions.authenticated(sessionResponse.data));
+    const { data } = sessionResponse;
+    yield put(actions.authenticated(data.responseObject));
   } catch (err) {
     yield put(actions.unauthenticated(null));
   }

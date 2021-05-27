@@ -1,10 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
+import theme from 'styles/theme';
 
 import { Box, Flex, H4, Span } from '../Common';
 import { NavLink, Link } from '../Link';
-import theme from 'styles/theme';
+import { selectAuth } from '../../containers/Auth/selectors';
+import { actions } from '../../containers/Auth/slice';
+import { DropDown } from 'app/components';
 
 const activeLink = {
   fontWeight: theme.fontWeights.bold,
@@ -13,6 +17,20 @@ const activeLink = {
 
 export const Header = () => {
   const { slideId } = useParams<{ slideId: string }>();
+  const { authInfo } = useSelector(selectAuth);
+  const dispatch = useDispatch();
+
+  const logout = () => {
+    localStorage.setItem('sp_token', '');
+    dispatch(actions.doLogout());
+  };
+
+  const items = [
+    {
+      title: 'Logout',
+      action: logout,
+    },
+  ];
 
   return (
     <CustomHeader>
@@ -22,28 +40,31 @@ export const Header = () => {
             Slide Presentation
           </Link>
         </H4>
-        {slideId && (
-          <Flex alignItems="center">
-            <Span variant="body">
-              <NavLink
-                exact
-                to={`/slide/${slideId}/editor`}
-                mr="s"
-                activeStyle={activeLink}
-              >
-                Route editor
-              </NavLink>
-            </Span>
-            <Span variant="body">
-              <NavLink
-                to={`/slide/${slideId}/presentation`}
-                activeStyle={activeLink}
-              >
-                Presentation
-              </NavLink>
-            </Span>
-          </Flex>
-        )}
+        <Flex alignItems="center">
+          {slideId && (
+            <div className="mr-2">
+              <Span variant="body">
+                <NavLink
+                  exact
+                  to={`/slide/${slideId}/editor`}
+                  mr="s"
+                  activeStyle={activeLink}
+                >
+                  Route editor
+                </NavLink>
+              </Span>
+              <Span variant="body">
+                <NavLink
+                  to={`/slide/${slideId}/presentation`}
+                  activeStyle={activeLink}
+                >
+                  Presentation
+                </NavLink>
+              </Span>
+            </div>
+          )}
+          <DropDown title={authInfo?.name || ''} items={items} />
+        </Flex>
       </Flex>
     </CustomHeader>
   );

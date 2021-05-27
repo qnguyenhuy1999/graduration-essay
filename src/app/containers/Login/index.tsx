@@ -50,7 +50,7 @@ function LoginForm(props: Props & FormProps) {
 
   useEffect(() => {
     if (loginResult) {
-      dispatch(authActions.authenticated(loginResult));
+      dispatch(authActions.authenticated(loginResult.data));
       localStorage.setItem('sp_token', loginResult?.loginToken);
     }
 

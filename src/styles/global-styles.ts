@@ -64,4 +64,8 @@ export const GlobalStyle = createGlobalStyle`
       margin: 0;
     }
   }
+  
+  .cursor-pointer{
+    cursor: pointer;
+  }
 `;

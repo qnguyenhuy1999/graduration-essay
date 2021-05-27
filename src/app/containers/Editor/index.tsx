@@ -22,7 +22,7 @@ import { Line } from './components/Line';
 import { ProtectedLayout } from '../ProtectedLayout';
 import ToastAlert from 'lib/services/alert.service';
 import { generateLines } from 'lib/helpers/line';
-import { CloneElement, Position } from 'types/element';
+import { CloneElement } from 'types/element';
 
 export const Editor = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });

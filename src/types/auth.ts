@@ -1,10 +1,9 @@
-import { Slide } from './slide';
-
 export interface UserInfo {
   id: string;
   email: string;
   name: string;
-  slides: Slide[];
+  sex: number;
+  age: number;
 }
 
 export interface LoginResult {

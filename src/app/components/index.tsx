@@ -4,6 +4,7 @@ import { FormControl, FormFieldError } from './Form/FormControl';
 import FormLabel from './Form/FormLabel';
 import { Link } from './Link';
 import { Modal } from './Modal';
+import { DropDown } from './DropDown';
 
 export {
   Button,
@@ -21,4 +22,5 @@ export {
   Link,
   FormFieldError,
   Modal,
+  DropDown,
 };

@@ -7,7 +7,7 @@ import Draggable from 'react-draggable';
 import { Button, Flex, Span } from 'app/components/Common';
 import { IconWrapper } from 'app/components/Icon';
 import { Close, Edit } from 'app/components/Icon/Common';
-import { CloneElement, Element as ElementType, Position } from 'types/element';
+import { CloneElement, Element as ElementType } from 'types/element';
 import { actions } from '../../slice';
 import ToastAlert from 'lib/services/alert.service';
 import { EditElementModal } from './components/EditElementModal';

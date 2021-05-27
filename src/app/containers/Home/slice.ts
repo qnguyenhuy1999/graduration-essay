@@ -9,6 +9,7 @@ export const initialState: ContainerState = {
   loading: false,
   slides: [],
   createSlideResult: null,
+  removeSlideResult: null,
   error: null,
 };
 
@@ -28,12 +29,22 @@ const homeSlice = createSlice({
       state.slides.push(slide);
     },
 
+    removeSlide(state, action: PayloadAction<string>) {},
+    removeSlideSuccess(state, action: PayloadAction<string>) {
+      const slideId = action.payload;
+      const slideIndex = state.slides.findIndex(slide => slide.id === slideId);
+      state.slides.splice(slideIndex, 1);
+      state.removeSlideResult = slideId;
+    },
+
     getError(state, action: PayloadAction<any>) {
+      state.loading = false;
       state.error = action.payload;
     },
     resetStateResult(state) {
       state.error = initialState.error;
       state.createSlideResult = initialState.createSlideResult;
+      state.removeSlideResult = initialState.removeSlideResult;
     },
     resetState() {
       return { ...initialState };

@@ -12,7 +12,7 @@ import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { actions, reducer, sliceKey } from './slice';
 import { selectHome } from './selectors';
 import { homeSaga } from './saga';
-import { Button, Flex, H4, Span } from '../../components';
+import { Button, Flex, H4, Link, Span } from '../../components';
 import { Slide } from './components/Slide';
 import { ProtectedLayout } from '../ProtectedLayout';
 import { ModalCreateSlide } from './components/ModalCreateSlide';
@@ -22,7 +22,13 @@ export function Home() {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: homeSaga });
 
-  const { slides, loading, error, createSlideResult } = useSelector(selectHome);
+  const {
+    slides,
+    loading,
+    error,
+    createSlideResult,
+    removeSlideResult,
+  } = useSelector(selectHome);
   const dispatch = useDispatch();
   const [isShowModalCreateSlide, setIsShowModalCreateSlide] = useState(false);
 
@@ -38,11 +44,16 @@ export function Home() {
       dispatch(actions.resetStateResult());
     }
 
+    if (removeSlideResult) {
+      ToastAlert.success('Remove slide successfully');
+      dispatch(actions.resetStateResult());
+    }
+
     if (error) {
       ToastAlert.error(error);
       dispatch(actions.resetStateResult());
     }
-  }, [createSlideResult, dispatch, error]);
+  }, [createSlideResult, dispatch, error, removeSlideResult]);
 
   const onCloseModalCreateSlide = () => {
     setIsShowModalCreateSlide(false);
@@ -57,12 +68,20 @@ export function Home() {
       <div className="mt-4">
         <Flex alignItems="center" justifyContent="space-between">
           <H4 mb="l">List slide</H4>
-          <Button
-            variant="primary"
-            onClick={() => setIsShowModalCreateSlide(true)}
-          >
-            Create new slide
-          </Button>
+          <Flex alignItems="center">
+            <Button
+              variant="primary"
+              mr="s"
+              onClick={() => setIsShowModalCreateSlide(true)}
+            >
+              Create new slide
+            </Button>
+            <Button variant="warning">
+              <Link to="/trash" color="primaryWhite">
+                Trash
+              </Link>
+            </Button>
+          </Flex>
         </Flex>
         <Flex flexWrap="wrap">
           {loading ? (

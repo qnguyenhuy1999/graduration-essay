@@ -27,6 +27,7 @@ import { Presentation } from './containers/Presentation/Loadable';
 import { Login } from './containers/Login/Loadable';
 import { Register } from './containers/Register/Loadable';
 import { Home } from './containers/Home/Loadable';
+import { Trash } from './containers/Trash/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -48,6 +49,7 @@ export function App() {
           <Route exact={false} path="/register" component={Register} />
 
           <ProtectedRoute exact path="/" component={Home} />
+          <ProtectedRoute exact path="/trash" component={Trash} />
           <ProtectedRoute
             exact
             path="/slide/:slideId/editor"

@@ -86,6 +86,7 @@ export class BaseApiService {
         originResponse: response,
       };
     } else {
+      // eslint-disable-next-line no-throw-literal
       throw { data: response.data, originResponse: response };
     }
   }
