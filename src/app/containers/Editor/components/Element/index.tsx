@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import styled from '@emotion/styled';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Draggable from 'react-draggable';
 
 import { Button, Flex, Span } from 'app/components/Common';
@@ -11,6 +11,7 @@ import { CloneElement, Element as ElementType } from 'types/element';
 import { actions } from '../../slice';
 import ToastAlert from 'lib/services/alert.service';
 import { EditElementModal } from './components/EditElementModal';
+import { selectEditor } from '../../selectors';
 
 interface Props {
   element: ElementType;
@@ -19,7 +20,6 @@ interface Props {
   setIsDragging: any;
   makeClone: (number, cloneElement: CloneElement) => void;
   saveClone: any;
-  numberClone: number;
 }
 
 export const Element = (props: Props) => {
@@ -30,10 +30,10 @@ export const Element = (props: Props) => {
     setIsDragging,
     makeClone,
     saveClone,
-    numberClone,
   } = props;
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isVisibleModal, setIsVisibleModal] = useState<boolean>(false);
+  const { updateElementResult } = useSelector(selectEditor);
   const dispatch = useDispatch();
 
   const nodeTop = element.nodes?.find(node => node.nodeNumber === 1);
@@ -42,12 +42,11 @@ export const Element = (props: Props) => {
   const nodeLeft = element.nodes?.find(node => node.nodeNumber === 4);
 
   useEffect(() => {
-    if (numberClone) {
-      setIsHover(true);
-    } else {
-      setIsHover(false);
+    if (updateElementResult) {
+      setIsVisibleModal(false);
+      dispatch(actions.resetStateResult());
     }
-  }, [numberClone]);
+  }, [dispatch, updateElementResult]);
 
   const createElement = (e, elementId, node) => {
     if (isDragging) return;

@@ -102,12 +102,12 @@ export function* updateElement(action) {
 export function* createLine(action) {
   try {
     const sessionResponse = yield call(
-      [ElementService, ElementService.updateElement],
+      [LineService, LineService.createLine],
       action.payload,
     );
     const { data } = sessionResponse;
     const { responseObject } = data;
-    yield put(actions.updateElementSuccess({ responseObject }));
+    yield put(actions.createLineSuccess({ responseObject }));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }
@@ -120,4 +120,5 @@ export function* editorSaga() {
   yield takeLatest(actions.resetSlide.type, resetSlide);
   yield takeLatest(actions.removeLine.type, removeLine);
   yield takeLatest(actions.updateElement.type, updateElement);
+  yield takeLatest(actions.createLine.type, createLine);
 }

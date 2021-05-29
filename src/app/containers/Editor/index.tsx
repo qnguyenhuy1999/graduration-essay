@@ -4,12 +4,11 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from '@emotion/styled';
-import Draggable from 'react-draggable';
 
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { reducer, sliceKey, actions } from './slice';
@@ -39,6 +38,7 @@ export const Editor = () => {
     error,
   } = useSelector(selectEditor);
   const dispatch = useDispatch();
+  const numberCloneRef = useRef<HTMLElement>();
   const { slideId } = useParams<{ slideId: string }>();
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [numberClone, setNumberClone] = useState<number>(0);
@@ -111,10 +111,34 @@ export const Editor = () => {
   };
 
   const handleStop = e => {
-    console.log(e.target);
     setNumberClone(0);
     setCloneElement(null);
   };
+
+  const dragElement = useCallback(
+    e => {
+      if (numberClone && cloneElement) {
+        setCloneElement({
+          ...cloneElement,
+          position: {
+            x: e.pageX - 50,
+            y: e.pageY - 50,
+          },
+        });
+      }
+    },
+    [cloneElement, numberClone],
+  );
+
+  useEffect(() => {
+    if (numberCloneRef.current) {
+      const drag = () => {
+        document.addEventListener('mousemove', dragElement);
+        document.addEventListener('mouseup', handleStop);
+      };
+      numberCloneRef.current?.addEventListener('mousedown', drag);
+    }
+  }, [dragElement]);
 
   return (
     <ProtectedLayout>
@@ -140,7 +164,6 @@ export const Editor = () => {
               setIsDragging={setIsDragging}
               makeClone={makeClone}
               saveClone={saveClone}
-              numberClone={numberClone}
             />
           ))}
 
@@ -165,24 +188,9 @@ export const Editor = () => {
         </svg>
 
         {numberClone && cloneElement?.elementId && (
-          <Draggable
-            onStop={handleStop}
-            onDrag={(event, data) => {
-              if (event.shiftKey) {
-                setCloneElement({
-                  ...cloneElement,
-                  position: {
-                    x: cloneElement?.position.x + data.deltaX,
-                    y: cloneElement?.position.y + data.deltaY,
-                  },
-                });
-              }
-            }}
-          >
-            <CloneStyled position={cloneElement?.position}>
-              {numberClone}
-            </CloneStyled>
-          </Draggable>
+          <CloneStyled ref={numberCloneRef} position={cloneElement?.position}>
+            {numberClone}
+          </CloneStyled>
         )}
       </HomeWrapper>
     </ProtectedLayout>
