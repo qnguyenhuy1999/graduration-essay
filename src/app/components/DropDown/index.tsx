@@ -17,9 +17,11 @@ export function DropDown(props: Props) {
   const { title, items } = props;
   return (
     <DropDownButtonStyled title={<Span variant="bodyBold">{title}</Span>}>
-      {items.map(item => {
+      {items.map((item, index) => {
         return (
-          <Dropdown.Item onClick={item.action}>{item.title}</Dropdown.Item>
+          <Dropdown.Item onClick={item.action} key={index}>
+            {item.title}
+          </Dropdown.Item>
         );
       })}
     </DropDownButtonStyled>

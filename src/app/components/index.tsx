@@ -1,4 +1,4 @@
-import { Box, Button, Flex, H1, H2, H3, H4, H5, Span } from './Common';
+import { Box, Button, Flex, H1, H2, H3, H4, H5, Span, P } from './Common';
 import { FormGroup } from './Form/FormGroup';
 import { FormControl, FormFieldError } from './Form/FormControl';
 import FormLabel from './Form/FormLabel';
@@ -11,6 +11,7 @@ export {
   Flex,
   Box,
   Span,
+  P,
   H1,
   H2,
   H3,

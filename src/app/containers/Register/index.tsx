@@ -159,7 +159,7 @@ function LoginForm(props: FormProps & Props) {
         width="100%"
         loading={isSubmitting}
       >
-        Login
+        Sign up
       </Button>
     </form>
   );

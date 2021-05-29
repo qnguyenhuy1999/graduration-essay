@@ -5,6 +5,7 @@ import { LoginState } from 'app/containers/Login/types';
 import { AuthState } from 'app/containers/Auth/types';
 import { RegisterState } from 'app/containers/Register/types';
 import { TrashState } from 'app/containers/Trash/types';
+import { ProfileState } from 'app/containers/Profile/types';
 // [IMPORT NEW CONTAINERSTATE ABOVE] < Needed for generating containers seamlessly
 
 /* 
@@ -21,5 +22,6 @@ export interface RootState {
   editor?: EditorState;
   presentation?: PresentationState;
   trash?: TrashState;
+  profile?: ProfileState;
   // [INSERT NEW REDUCER KEY ABOVE] < Needed for generating containers seamlessly
 }

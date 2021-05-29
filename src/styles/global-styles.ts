@@ -68,4 +68,61 @@ export const GlobalStyle = createGlobalStyle`
   .cursor-pointer{
     cursor: pointer;
   }
+  
+  @keyframes slideTop {
+    from{
+      opacity: 0;
+      transform: translateY(-150%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideRight {
+    from{
+      opacity: 0;
+      transform: translateX(150%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideBottom {
+    from{
+      opacity: 0;
+      transform: translateY(150%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideLeft {
+    from{
+      opacity: 0;
+      transform: translateX(-150%);
+    }
+    to{
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .slide-content.top{
+    animation: slideTop 2s ease-in;
+  }
+  .slide-content.right{
+    animation: slideRight 2s ease-in;
+  }
+  .slide-content.bottom{
+    animation: slideBottom 2s ease-in;
+  }
+  .slide-content.left{
+    animation: slideLeft 2s ease-in;
+  }
 `;

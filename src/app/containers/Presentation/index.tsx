@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -36,9 +36,23 @@ export const Presentation = () => {
   const { location } = useHistory();
   const { slideId } = useParams<{ slideId: string }>();
   const { listElements } = useSelector(selectEditor);
+  const [nextDirection, setNextDirection] = useState<string>('');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setNextDirection('');
+    }, 2000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  });
 
   useEffect(() => {
     dispatch(editorActions.getListElements({ slideId }));
+    return () => {
+      dispatch(actions.resetState());
+      setNextDirection('');
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -60,12 +74,16 @@ export const Presentation = () => {
       </Helmet>
 
       <div className="mt-5">
-        <PresentationView element={currentElement} />
+        <PresentationView
+          element={currentElement}
+          nextDirection={nextDirection}
+        />
         <MiniMap currentElement={currentElement} />
         <DirectionButtons
           nodes={currentElement?.nodes}
           slideId={slideId}
           elementId={currentElement?.elementId}
+          setNextDirection={setNextDirection}
         />
       </div>
     </ProtectedLayout>

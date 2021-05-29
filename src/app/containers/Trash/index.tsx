@@ -33,6 +33,9 @@ export function Trash(props: Props) {
 
   useEffect(() => {
     dispatch(actions.getSlideInTrash());
+    return () => {
+      dispatch(actions.resetState());
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

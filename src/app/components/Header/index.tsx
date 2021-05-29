@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import theme from 'styles/theme';
@@ -19,6 +19,7 @@ export const Header = () => {
   const { slideId } = useParams<{ slideId: string }>();
   const { authInfo } = useSelector(selectAuth);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const logout = () => {
     localStorage.setItem('sp_token', '');
@@ -26,6 +27,10 @@ export const Header = () => {
   };
 
   const items = [
+    {
+      title: 'Profile',
+      action: () => history.push('/profile'),
+    },
     {
       title: 'Logout',
       action: logout,

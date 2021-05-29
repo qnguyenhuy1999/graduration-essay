@@ -39,7 +39,9 @@ export const Editor = () => {
     error,
   } = useSelector(selectEditor);
   const dispatch = useDispatch();
-  const numberCloneRef = useRef<HTMLElement>();
+  let numberCloneRef: React.MutableRefObject<HTMLElement | null> | null = useRef(
+    null,
+  );
   const { slideId } = useParams<{ slideId: string }>();
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [numberClone, setNumberClone] = useState<number>(0);
@@ -47,6 +49,9 @@ export const Editor = () => {
 
   useEffect(() => {
     dispatch(actions.getListElements({ slideId }));
+    return () => {
+      dispatch(actions.resetState());
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,18 +106,18 @@ export const Editor = () => {
     updateElementResult,
   ]);
 
-  const makeClone = (number: number, cloneElement: CloneElement) => {
+  const makeClone = (number: number, sourceCloneElement: CloneElement) => {
     setNumberClone(number);
-    setCloneElement(cloneElement);
+    setCloneElement(sourceCloneElement);
   };
 
-  const saveClone = (cloneNewElement: CloneElement) => {
+  const saveClone = (targetCloneElement: CloneElement) => {
     dispatch(
       actions.createLine({
         eSource: cloneElement?.elementId || '',
         nSource: cloneElement?.nodeId || '',
-        eTarget: cloneNewElement?.elementId || '',
-        nTarget: cloneNewElement?.nodeId || '',
+        eTarget: targetCloneElement?.elementId || '',
+        nTarget: targetCloneElement?.nodeId || '',
       }),
     );
   };
@@ -120,6 +125,9 @@ export const Editor = () => {
   const handleStop = e => {
     setNumberClone(0);
     setCloneElement(null);
+    numberCloneRef = null;
+    document.removeEventListener('mousemove', dragElement);
+    document.removeEventListener('mouseup', handleStop);
   };
 
   const dragElement = useCallback(
@@ -138,14 +146,14 @@ export const Editor = () => {
   );
 
   useEffect(() => {
-    if (numberCloneRef.current) {
+    if (numberCloneRef?.current) {
       const drag = () => {
         document.addEventListener('mousemove', dragElement);
         document.addEventListener('mouseup', handleStop);
       };
-      numberCloneRef.current?.addEventListener('mousedown', drag);
+      numberCloneRef?.current?.addEventListener('mousedown', drag);
     }
-  }, [dragElement]);
+  }, [dragElement, handleStop]);
 
   return (
     <ProtectedLayout>
@@ -229,6 +237,5 @@ const CloneStyled = styled.div<any>`
   top: ${props => props.position?.y}px;
   left: ${props => props.position?.x}px;
   transform: translate(calc(-150% + 10px), calc(-150% + 5px)) !important;
-  //pointer-events: none;
   z-index: 10;
 `;
