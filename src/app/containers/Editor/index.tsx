@@ -35,6 +35,7 @@ export const Editor = () => {
     removeElementResult,
     resetSlideResult,
     removeLineResult,
+    createLineResult,
     error,
   } = useSelector(selectEditor);
   const dispatch = useDispatch();
@@ -79,12 +80,18 @@ export const Editor = () => {
       dispatch(actions.resetStateResult());
     }
 
+    if (createLineResult) {
+      ToastAlert.success('Line successfully linked');
+      dispatch(actions.resetStateResult());
+    }
+
     if (error) {
       ToastAlert.error(error);
       dispatch(actions.resetStateResult());
     }
   }, [
     createElementResult,
+    createLineResult,
     dispatch,
     error,
     removeElementResult,

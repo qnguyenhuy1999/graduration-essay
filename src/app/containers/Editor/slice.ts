@@ -171,6 +171,25 @@ const editorSlice = createSlice({
 
     createLine(state, action: PayloadAction<CreateLine>) {},
     createLineSuccess(state, action: PayloadAction<any>) {
+      const { linkId, eSource, nSource, eTarget, nTarget } = action.payload;
+      const cloneListElement = [...state.listElements];
+      const sourceElementIndex = cloneListElement.findIndex(
+        element => element.elementId === eSource,
+      );
+      const sourceNode = cloneListElement[sourceElementIndex].nodes.find(
+        node => node.id === nSource,
+      );
+      const targetElementIndex = cloneListElement.findIndex(
+        element => element.elementId === eTarget,
+      );
+      const targetNode = cloneListElement[targetElementIndex].nodes.find(
+        node => node.id === nTarget,
+      );
+      if (sourceNode && targetNode) {
+        sourceNode.linkId = linkId;
+        targetNode.linkId = linkId;
+      }
+      state.listElements = cloneListElement;
       state.createLineResult = action.payload;
     },
 
@@ -184,6 +203,7 @@ const editorSlice = createSlice({
       state.resetSlideResult = initialState.resetSlideResult;
       state.removeLineResult = initialState.removeLineResult;
       state.updateElementResult = initialState.updateElementResult;
+      state.createLineResult = initialState.createLineResult;
     },
     resetState() {
       return { ...initialState };

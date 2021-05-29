@@ -53,6 +53,7 @@ export interface SetPositionType {
 export interface NodeUpdate {
   id: string;
   caption: string;
+  linkId?: string;
 }
 
 export interface UpdateElement {

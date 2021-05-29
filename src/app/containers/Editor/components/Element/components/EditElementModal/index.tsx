@@ -20,6 +20,7 @@ interface Props {
 
 interface FormProps extends FormikProps<EditElementFormValues> {
   handleClose: () => void;
+  element: Element;
 }
 
 interface FormFormikProps {
@@ -96,6 +97,7 @@ function EditElementForm(props: FormProps) {
             name="top"
             value={values.content?.top.caption}
             onChange={e => setFieldValue('content.top.caption', e.target.value)}
+            disabled={values.content?.top.linkId === 'empty'}
           />
           <FormControl
             name="right"
@@ -103,6 +105,7 @@ function EditElementForm(props: FormProps) {
             onChange={e =>
               setFieldValue('content.right.caption', e.target.value)
             }
+            disabled={values.content?.right.linkId === 'empty'}
           />
           <FormControl
             name="bottom"
@@ -110,6 +113,7 @@ function EditElementForm(props: FormProps) {
             onChange={e =>
               setFieldValue('content.bottom.caption', e.target.value)
             }
+            disabled={values.content?.bottom.linkId === 'empty'}
           />
           <FormControl
             name="left"
@@ -117,6 +121,7 @@ function EditElementForm(props: FormProps) {
             onChange={e =>
               setFieldValue('content.left.caption', e.target.value)
             }
+            disabled={values.content?.left.linkId === 'empty'}
           />
         </Flex>
       </FormWrapperStyled>
@@ -147,15 +152,25 @@ const EditElementFormik = withFormik<FormFormikProps, EditElementFormValues>({
     return {
       html: contentElement,
       content: {
-        top: { id: nodeTop?.id || '', caption: nodeTop?.caption || '' },
-        right: { id: nodeRight?.id || '', caption: nodeRight?.caption || '' },
+        top: {
+          id: nodeTop?.id || '',
+          caption: nodeTop?.caption || '',
+          linkId: nodeTop?.linkId,
+        },
+        right: {
+          id: nodeRight?.id || '',
+          caption: nodeRight?.caption || '',
+          linkId: nodeRight?.linkId,
+        },
         bottom: {
           id: nodeBottom?.id || '',
           caption: nodeBottom?.caption || '',
+          linkId: nodeBottom?.linkId,
         },
         left: {
           id: nodeLeft?.id || '',
           caption: nodeLeft?.caption || '',
+          linkId: nodeLeft?.linkId,
         },
       },
     };
@@ -170,14 +185,18 @@ const EditElementFormik = withFormik<FormFormikProps, EditElementFormValues>({
     }),
   }),
   handleSubmit: (values, { props }) => {
+    const nodes = [
+      { id: values.content?.top.id, caption: values.content?.top.caption },
+      { id: values.content?.right.id, caption: values.content?.right.caption },
+      {
+        id: values.content?.bottom.id,
+        caption: values.content?.bottom.caption,
+      },
+      { id: values.content?.left.id, caption: values.content?.left.caption },
+    ];
     const data = {
       html: draftToHtml(convertToRaw(values.html.getCurrentContent())),
-      nodes: [
-        values.content?.top,
-        values.content?.right,
-        values.content?.bottom,
-        values.content?.left,
-      ],
+      nodes,
     };
     props.updateContentElement(data);
   },

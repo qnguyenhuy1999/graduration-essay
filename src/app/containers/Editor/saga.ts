@@ -107,7 +107,9 @@ export function* createLine(action) {
     );
     const { data } = sessionResponse;
     const { responseObject } = data;
-    yield put(actions.createLineSuccess({ responseObject }));
+    yield put(
+      actions.createLineSuccess({ ...responseObject, ...action.payload }),
+    );
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }

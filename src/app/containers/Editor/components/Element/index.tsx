@@ -115,6 +115,36 @@ export const Element = (props: Props) => {
     }
   };
 
+  const handleMouseDown = (numberClone, node, e) => {
+    if (e.shiftKey) {
+      e.stopPropagation();
+
+      if (node.linkId !== 'empty')
+        return ToastAlert.error('Node is already linked');
+
+      makeClone(numberClone, {
+        position: { x: e.clientX - 50, y: e.clientY - 50 },
+        elementId: element.elementId,
+        nodeId: node.id,
+      });
+    }
+  };
+
+  const handleMouseUp = (node, e) => {
+    if (e.shiftKey) {
+      e.stopPropagation();
+
+      if (node.linkId !== 'empty')
+        return ToastAlert.error('Node is already linked');
+
+      saveClone({
+        position: { x: 0, y: 0 },
+        elementId: element.elementId,
+        nodeId: node.id,
+      });
+    }
+  };
+
   return (
     <Draggable onStop={handleStop} onDrag={handleDrag}>
       <ElementContainerItem
@@ -131,23 +161,8 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeTop)}
-              onMouseDown={e => {
-                if (e.shiftKey) {
-                  e.stopPropagation();
-                  makeClone(1, {
-                    position: { x: e.clientX - 50, y: e.clientY - 50 },
-                    elementId: element.elementId,
-                    nodeId: nodeTop.id,
-                  });
-                }
-              }}
-              onMouseUp={e => {
-                saveClone({
-                  position: { x: 0, y: 0 },
-                  elementId: element.elementId,
-                  nodeId: nodeTop.id,
-                });
-              }}
+              onMouseDown={e => handleMouseDown(1, nodeTop, e)}
+              onMouseUp={e => handleMouseUp(nodeTop, e)}
             >
               <Span>1</Span>
             </div>
@@ -156,22 +171,8 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeRight)}
-              onMouseDown={e => {
-                if (e.shiftKey) {
-                  makeClone(2, {
-                    position: { x: e.clientX - 50, y: e.clientY - 50 },
-                    elementId: element.elementId,
-                    nodeId: nodeRight.id,
-                  });
-                }
-              }}
-              onMouseUp={e => {
-                saveClone({
-                  position: { x: 0, y: 0 },
-                  elementId: element.elementId,
-                  nodeId: nodeRight.id,
-                });
-              }}
+              onMouseDown={e => handleMouseDown(2, nodeRight, e)}
+              onMouseUp={e => handleMouseUp(nodeRight, e)}
             >
               <Span>2</Span>
             </div>
@@ -180,23 +181,8 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeLeft)}
-              onMouseDown={e => {
-                if (e.shiftKey) {
-                  e.stopPropagation();
-                  makeClone(4, {
-                    position: { x: e.clientX - 50, y: e.clientY - 50 },
-                    elementId: element.elementId,
-                    nodeId: nodeLeft.id,
-                  });
-                }
-              }}
-              onMouseUp={e => {
-                saveClone({
-                  position: { x: 0, y: 0 },
-                  elementId: element.elementId,
-                  nodeId: nodeLeft.id,
-                });
-              }}
+              onMouseDown={e => handleMouseDown(4, nodeLeft, e)}
+              onMouseUp={e => handleMouseUp(nodeLeft, e)}
             >
               <Span>4</Span>
             </div>
@@ -205,23 +191,8 @@ export const Element = (props: Props) => {
             <div
               className="path"
               onClick={e => createElement(e, element.elementId, nodeBottom)}
-              onMouseDown={e => {
-                if (e.shiftKey) {
-                  e.stopPropagation();
-                  makeClone(3, {
-                    position: { x: e.clientX - 50, y: e.clientY - 50 },
-                    elementId: element.elementId,
-                    nodeId: nodeBottom.id,
-                  });
-                }
-              }}
-              onMouseUp={e => {
-                saveClone({
-                  position: { x: 0, y: 0 },
-                  elementId: element.elementId,
-                  nodeId: nodeBottom.id,
-                });
-              }}
+              onMouseDown={e => handleMouseDown(3, nodeBottom, e)}
+              onMouseUp={e => handleMouseUp(nodeBottom, e)}
             >
               <Span>3</Span>
             </div>
