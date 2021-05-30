@@ -93,7 +93,7 @@ export function* updateElement(action) {
     );
     const { data } = sessionResponse;
     const { responseObject } = data;
-    yield put(actions.updateElementSuccess({ responseObject }));
+    yield put(actions.updateElementSuccess({ ...responseObject }));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }

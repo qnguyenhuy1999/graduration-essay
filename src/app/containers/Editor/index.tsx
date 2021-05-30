@@ -132,7 +132,7 @@ export const Editor = () => {
 
   const dragElement = useCallback(
     e => {
-      if (numberClone && cloneElement) {
+      if (numberClone && cloneElement && e.shiftKey) {
         setCloneElement({
           ...cloneElement,
           position: {
@@ -153,7 +153,8 @@ export const Editor = () => {
       };
       numberCloneRef?.current?.addEventListener('mousedown', drag);
     }
-  }, [dragElement, handleStop]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dragElement, numberCloneRef]);
 
   return (
     <ProtectedLayout>

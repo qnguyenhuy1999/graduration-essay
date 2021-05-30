@@ -38,7 +38,11 @@ export function DirectionButtons(props: Props) {
     document.addEventListener('keydown', e => {
       handleDirection(e.key);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      document.removeEventListener('keydown', e => {
+        handleDirection(e.key);
+      });
+    };
   });
 
   const renderDirectionButton = () => {

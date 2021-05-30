@@ -1,5 +1,13 @@
 import styled from '@emotion/styled';
-import { ColorProps, SpaceProps, variant } from 'styled-system';
+import {
+  ColorProps,
+  SpaceProps,
+  variant,
+  compose,
+  color,
+  space,
+  layout,
+} from 'styled-system';
 
 type BaseParagraphProps = ColorProps & SpaceProps;
 
@@ -26,6 +34,7 @@ const P = styled.p<BaseParagraphProps>`
       },
     },
   })}
+  ${compose(color, space, layout)}
 `;
 
 const Span = styled.span<BaseParagraphProps>`
@@ -51,6 +60,7 @@ const Span = styled.span<BaseParagraphProps>`
       },
     },
   })}
+  ${compose(color, space, layout)}
 `;
 
 export { P, Span };

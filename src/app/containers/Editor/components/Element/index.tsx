@@ -65,7 +65,6 @@ export const Element = (props: Props) => {
   const updateContentElement = payload => {
     const data = {
       position: element.position,
-      caption: element.caption,
       status: element.status,
       elementId: element.elementId,
       slideId,
@@ -146,84 +145,91 @@ export const Element = (props: Props) => {
   };
 
   return (
-    <Draggable onStop={handleStop} onDrag={handleDrag}>
-      <ElementContainerItem
-        className={classNames('element-container-item', {
-          hover: isHover,
-        })}
-        onMouseOver={() => setIsHover(true)}
-        onMouseLeave={() => setIsHover(false)}
-        isHover={isHover}
-        position={element.position}
-      >
-        <NodeElement className="element">
-          {nodeTop && (
-            <div
-              className="path"
-              onClick={e => createElement(e, element.elementId, nodeTop)}
-              onMouseDown={e => handleMouseDown(1, nodeTop, e)}
-              onMouseUp={e => handleMouseUp(nodeTop, e)}
-            >
-              <Span>1</Span>
-            </div>
-          )}
-          {nodeRight && (
-            <div
-              className="path"
-              onClick={e => createElement(e, element.elementId, nodeRight)}
-              onMouseDown={e => handleMouseDown(2, nodeRight, e)}
-              onMouseUp={e => handleMouseUp(nodeRight, e)}
-            >
-              <Span>2</Span>
-            </div>
-          )}
-          {nodeLeft && (
-            <div
-              className="path"
-              onClick={e => createElement(e, element.elementId, nodeLeft)}
-              onMouseDown={e => handleMouseDown(4, nodeLeft, e)}
-              onMouseUp={e => handleMouseUp(nodeLeft, e)}
-            >
-              <Span>4</Span>
-            </div>
-          )}
-          {nodeBottom && (
-            <div
-              className="path"
-              onClick={e => createElement(e, element.elementId, nodeBottom)}
-              onMouseDown={e => handleMouseDown(3, nodeBottom, e)}
-              onMouseUp={e => handleMouseUp(nodeBottom, e)}
-            >
-              <Span>3</Span>
-            </div>
-          )}
-        </NodeElement>
+    <div>
+      <Draggable onStop={handleStop} onDrag={handleDrag}>
+        <ElementContainerItem
+          className={classNames('element-container-item', {
+            hover: isHover,
+          })}
+          onMouseOver={() => setIsHover(true)}
+          onMouseLeave={() => setIsHover(false)}
+          isHover={isHover}
+          position={element.position}
+        >
+          <NodeElement className="element">
+            {nodeTop && (
+              <div
+                className="path"
+                onClick={e => createElement(e, element.elementId, nodeTop)}
+                onMouseDown={e => handleMouseDown(1, nodeTop, e)}
+                onMouseUp={e => handleMouseUp(nodeTop, e)}
+              >
+                <Span>1</Span>
+              </div>
+            )}
+            {nodeRight && (
+              <div
+                className="path"
+                onClick={e => createElement(e, element.elementId, nodeRight)}
+                onMouseDown={e => handleMouseDown(2, nodeRight, e)}
+                onMouseUp={e => handleMouseUp(nodeRight, e)}
+              >
+                <Span>2</Span>
+              </div>
+            )}
+            {nodeLeft && (
+              <div
+                className="path"
+                onClick={e => createElement(e, element.elementId, nodeLeft)}
+                onMouseDown={e => handleMouseDown(4, nodeLeft, e)}
+                onMouseUp={e => handleMouseUp(nodeLeft, e)}
+              >
+                <Span>4</Span>
+              </div>
+            )}
+            {nodeBottom && (
+              <div
+                className="path"
+                onClick={e => createElement(e, element.elementId, nodeBottom)}
+                onMouseDown={e => handleMouseDown(3, nodeBottom, e)}
+                onMouseUp={e => handleMouseUp(nodeBottom, e)}
+              >
+                <Span>3</Span>
+              </div>
+            )}
+          </NodeElement>
 
-        <Controls justifyContent="space-between" pt="s" className="controls">
-          <Button
-            variant="primary"
-            mr="xs"
-            onClick={() => setIsVisibleModal(true)}
-          >
-            <IconWrapper icon={Edit} fill="primaryWhite" />
-          </Button>
-          <Button
-            variant="warning"
-            onClick={() =>
-              dispatch(actions.removeElement({ elementId: element.elementId }))
-            }
-          >
-            <IconWrapper icon={Close} fill="primaryWhite" />
-          </Button>
-        </Controls>
-        <EditElementModal
-          updateContentElement={updateContentElement}
-          element={element}
-          visible={isVisibleModal}
-          handleClose={handleCloseEditModal}
-        />
-      </ElementContainerItem>
-    </Draggable>
+          <Controls justifyContent="space-between" pt="s" className="controls">
+            <Button
+              variant="primary"
+              mr="xs"
+              onClick={() => {
+                setIsVisibleModal(true);
+                setIsHover(false);
+              }}
+            >
+              <IconWrapper icon={Edit} fill="primaryWhite" />
+            </Button>
+            <Button
+              variant="warning"
+              onClick={() =>
+                dispatch(
+                  actions.removeElement({ elementId: element.elementId }),
+                )
+              }
+            >
+              <IconWrapper icon={Close} fill="primaryWhite" />
+            </Button>
+          </Controls>
+        </ElementContainerItem>
+      </Draggable>
+      <EditElementModal
+        updateContentElement={updateContentElement}
+        element={element}
+        visible={isVisibleModal}
+        handleClose={handleCloseEditModal}
+      />
+    </div>
   );
 };
 

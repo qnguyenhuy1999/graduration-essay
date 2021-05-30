@@ -8,7 +8,15 @@ import { FormikProps, withFormik } from 'formik';
 import * as Yup from 'yup';
 import styled from '@emotion/styled';
 
-import { Box, Button, Flex, FormControl, Modal } from 'app/components';
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  FormGroup,
+  FormLabel,
+  Modal,
+} from 'app/components';
 import { EditElementFormValues, Element } from 'types/element';
 
 interface Props {
@@ -80,6 +88,16 @@ function EditElementForm(props: FormProps) {
   return (
     <form onSubmit={handleSubmit}>
       <FormWrapperStyled>
+        <FormGroup mt="s">
+          <FormLabel htmlFor="caption">Caption</FormLabel>
+          <FormControl
+            name="caption"
+            id="caption"
+            value={values.caption}
+            onChange={e => setFieldValue('caption', e.target.value)}
+          />
+        </FormGroup>
+
         <EditorStyled height={EDITOR_HEIGHT}>
           <Editor
             editorState={values.html}
@@ -92,38 +110,61 @@ function EditElementForm(props: FormProps) {
           />
         </EditorStyled>
 
-        <Flex className="align-items-center justify-content-center flex-wrap">
-          <FormControl
-            name="top"
-            value={values.content?.top.caption}
-            onChange={e => setFieldValue('content.top.caption', e.target.value)}
-            disabled={values.content?.top.linkId === 'empty'}
-          />
-          <FormControl
-            name="right"
-            value={values.content?.right.caption}
-            onChange={e =>
-              setFieldValue('content.right.caption', e.target.value)
-            }
-            disabled={values.content?.right.linkId === 'empty'}
-          />
-          <FormControl
-            name="bottom"
-            value={values.content?.bottom.caption}
-            onChange={e =>
-              setFieldValue('content.bottom.caption', e.target.value)
-            }
-            disabled={values.content?.bottom.linkId === 'empty'}
-          />
-          <FormControl
-            name="left"
-            value={values.content?.left.caption}
-            onChange={e =>
-              setFieldValue('content.left.caption', e.target.value)
-            }
-            disabled={values.content?.left.linkId === 'empty'}
-          />
-        </Flex>
+        <div>
+          <Flex alignItems="center" mb="m">
+            <FormGroup mr="m" width="100%">
+              <FormLabel htmlFor="top">Top</FormLabel>
+              <FormControl
+                name="top"
+                id="top"
+                value={values.content?.top.caption}
+                onChange={e =>
+                  setFieldValue('content.top.caption', e.target.value)
+                }
+                disabled={values.content?.top.linkId === 'empty'}
+              />
+            </FormGroup>
+            <FormGroup width="100%">
+              <FormLabel htmlFor="right">Right</FormLabel>
+              <FormControl
+                name="right"
+                id="right"
+                value={values.content?.right.caption}
+                onChange={e =>
+                  setFieldValue('content.right.caption', e.target.value)
+                }
+                disabled={values.content?.right.linkId === 'empty'}
+              />
+            </FormGroup>
+          </Flex>
+          <Flex alignItems="center" mb="m">
+            <FormGroup mr="m" width="100%">
+              <FormLabel htmlFor="bottom">Bottom</FormLabel>
+              <FormControl
+                name="bottom"
+                id="bottom"
+                value={values.content?.bottom.caption}
+                onChange={e =>
+                  setFieldValue('content.bottom.caption', e.target.value)
+                }
+                disabled={values.content?.bottom.linkId === 'empty'}
+                mr="m"
+              />
+            </FormGroup>
+            <FormGroup width="100%">
+              <FormLabel htmlFor="left">Left</FormLabel>
+              <FormControl
+                name="left"
+                id="left"
+                value={values.content?.left.caption}
+                onChange={e =>
+                  setFieldValue('content.left.caption', e.target.value)
+                }
+                disabled={values.content?.left.linkId === 'empty'}
+              />
+            </FormGroup>
+          </Flex>
+        </div>
       </FormWrapperStyled>
 
       <div className="mt-4">
@@ -150,6 +191,7 @@ const EditElementFormik = withFormik<FormFormikProps, EditElementFormValues>({
     const nodeBottom = element.nodes.find(node => node.nodeNumber === 3);
     const nodeLeft = element.nodes.find(node => node.nodeNumber === 4);
     return {
+      caption: element.caption,
       html: contentElement,
       content: {
         top: {
@@ -176,6 +218,7 @@ const EditElementFormik = withFormik<FormFormikProps, EditElementFormValues>({
     };
   },
   validationSchema: Yup.object().shape({
+    caption: Yup.mixed().required(),
     html: Yup.mixed().required(),
     content: Yup.object().shape({
       top: Yup.mixed().required(),
@@ -195,6 +238,7 @@ const EditElementFormik = withFormik<FormFormikProps, EditElementFormValues>({
       { id: values.content?.left.id, caption: values.content?.left.caption },
     ];
     const data = {
+      caption: values.caption,
       html: draftToHtml(convertToRaw(values.html.getCurrentContent())),
       nodes,
     };

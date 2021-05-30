@@ -74,6 +74,7 @@ export interface ResponseNewElement {
 }
 
 export interface EditElementFormValues {
+  caption: string;
   html: any;
   content: {
     top: NodeUpdate;

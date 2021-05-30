@@ -7,9 +7,16 @@ export class AuthServiceFactory extends BaseApiService {
   }
 
   login(loginInfo: LoginFormValues): Promise<ApiResponse> {
-    return this.post('/api/login', {
-      ...loginInfo,
-    });
+    localStorage.removeItem('sp_token');
+    return this.post(
+      '/api/login',
+      {
+        ...loginInfo,
+      },
+      {
+        headers: { Authorization: null },
+      },
+    );
   }
 
   register(registerInfo: RegisterFormValues): Promise<ApiResponse> {

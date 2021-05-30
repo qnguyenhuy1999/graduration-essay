@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Dispatch, useEffect } from 'react';
+import React, { Dispatch } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { FormikProps, withFormik } from 'formik';
@@ -12,11 +12,9 @@ import * as Yup from 'yup';
 
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { actions, reducer, sliceKey } from './slice';
-import { selectProfile } from './selectors';
 import { profileSaga } from './saga';
 import { ProtectedLayout } from '../ProtectedLayout';
 import { ProfileLayout } from './components/ProfileLayout';
-import ToastAlert from 'lib/services/alert.service';
 import { UpdateProfileFormValues } from 'types/profile';
 import {
   Button,
@@ -27,7 +25,6 @@ import {
   H3,
 } from 'app/components';
 import { selectAuth } from '../Auth/selectors';
-import { actions as authActions } from '../Auth/slice';
 import { UserInfo } from 'types/auth';
 
 interface Props {
@@ -120,29 +117,8 @@ export function Profile() {
   useInjectReducer({ key: sliceKey, reducer: reducer });
   useInjectSaga({ key: sliceKey, saga: profileSaga });
 
-  const { changePasswordResult, changeProfileResult, error } = useSelector(
-    selectProfile,
-  );
   const { authInfo } = useSelector(selectAuth);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (changePasswordResult) {
-      ToastAlert.success('Password successfully updated');
-      dispatch(actions.resetStateResult());
-    }
-
-    if (changeProfileResult) {
-      ToastAlert.success('Profile successfully updated');
-      dispatch(authActions.setCurrentUser(changeProfileResult));
-      dispatch(actions.resetStateResult());
-    }
-
-    if (error) {
-      ToastAlert.error(error);
-      dispatch(actions.resetStateResult());
-    }
-  }, [changePasswordResult, changeProfileResult, dispatch, error]);
 
   return (
     <ProtectedLayout>

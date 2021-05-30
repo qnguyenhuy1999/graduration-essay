@@ -37,7 +37,10 @@ const removeLinesWhenRemoveElement = (listElements, listLines, elementId) => {
 
   element.nodes.forEach(node => {
     cloneListLines.forEach((link, index) => {
-      link.linkId === node.linkId && listLines.splice(index, 1);
+      if (link.linkId === node.linkId) {
+        listLines.splice(index, 1);
+        removeLinkedElementWhenRemoveLine(listElements, link);
+      }
     });
   });
 
@@ -151,14 +154,14 @@ const editorSlice = createSlice({
 
     updateElement(state, action: PayloadAction<UpdateElement>) {},
     updateElementSuccess(state, action: PayloadAction<any>) {
-      const { updateElement, elementId } = action.payload;
+      const data = action.payload;
 
       const cloneListElements = [...state.listElements];
       const elementIndex = cloneListElements.findIndex(
-        element => element.elementId === elementId,
+        element => element.elementId === data.elementId,
       );
 
-      cloneListElements[elementIndex] = updateElement;
+      cloneListElements[elementIndex] = data;
 
       state.updateElementResult = action.payload;
       state.listElements = cloneListElements;

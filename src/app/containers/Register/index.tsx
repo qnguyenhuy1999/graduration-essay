@@ -43,6 +43,7 @@ function LoginForm(props: FormProps & Props) {
     handleBlur,
     handleSubmit,
     values,
+    errors,
     dispatch,
     setSubmitting,
     isSubmitting,
@@ -78,7 +79,13 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormFieldError name="name" />
+            {errors.name ? (
+              <FormFieldError name="name" />
+            ) : (
+              <Span variant="body" color="redPigment">
+                ""
+              </Span>
+            )}
           </FormGroup>
 
           <FormGroup>
@@ -92,7 +99,13 @@ function LoginForm(props: FormProps & Props) {
               onBlur={handleBlur}
               value={values.age}
             />
-            <FormFieldError name="age" />
+            {errors.age ? (
+              <FormFieldError name="age" />
+            ) : (
+              <Span variant="body" color="redPigment">
+                ""
+              </Span>
+            )}
           </FormGroup>
 
           <FormGroup>
@@ -108,7 +121,13 @@ function LoginForm(props: FormProps & Props) {
               <option value="0">Female</option>
               <option value="1">Male</option>
             </FormControl>
-            <FormFieldError name="sex" />
+            {errors.sex ? (
+              <FormFieldError name="sex" />
+            ) : (
+              <Span variant="body" color="redPigment">
+                ""
+              </Span>
+            )}
           </FormGroup>
         </div>
 
@@ -123,7 +142,13 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormFieldError name="email" />
+            {errors.email ? (
+              <FormFieldError name="email" />
+            ) : (
+              <Span variant="body" color="redPigment">
+                ""
+              </Span>
+            )}
           </FormGroup>
 
           <FormGroup>
@@ -136,7 +161,13 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormFieldError name="password" />
+            {errors.password ? (
+              <FormFieldError name="password" />
+            ) : (
+              <Span variant="body" color="redPigment">
+                ""
+              </Span>
+            )}
           </FormGroup>
 
           <FormGroup>
@@ -148,7 +179,13 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            <FormFieldError name="confirmPassword" />
+            {errors.confirmPassword ? (
+              <FormFieldError name="confirmPassword" />
+            ) : (
+              <Span variant="body" color="redPigment">
+                ""
+              </Span>
+            )}
           </FormGroup>
         </div>
       </Flex>
@@ -171,6 +208,14 @@ const RegisterFormik = withFormik<Props, RegisterFormValues>({
     name: '',
     sex: 1,
     age: 18,
+    password: '',
+    confirmPassword: '',
+  }),
+  mapPropsToErrors: () => ({
+    email: '',
+    name: '',
+    sex: '',
+    age: '',
     password: '',
     confirmPassword: '',
   }),
