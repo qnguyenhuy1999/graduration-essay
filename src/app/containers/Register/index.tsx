@@ -79,13 +79,7 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.name ? (
-              <FormFieldError name="name" />
-            ) : (
-              <Span variant="body" color="redPigment">
-                ""
-              </Span>
-            )}
+            &nbsp; {errors.name && <FormFieldError name="name" />}
           </FormGroup>
 
           <FormGroup>
@@ -99,13 +93,7 @@ function LoginForm(props: FormProps & Props) {
               onBlur={handleBlur}
               value={values.age}
             />
-            {errors.age ? (
-              <FormFieldError name="age" />
-            ) : (
-              <Span variant="body" color="redPigment">
-                ""
-              </Span>
-            )}
+            &nbsp; {errors.age && <FormFieldError name="age" />}
           </FormGroup>
 
           <FormGroup>
@@ -121,13 +109,7 @@ function LoginForm(props: FormProps & Props) {
               <option value="0">Female</option>
               <option value="1">Male</option>
             </FormControl>
-            {errors.sex ? (
-              <FormFieldError name="sex" />
-            ) : (
-              <Span variant="body" color="redPigment">
-                ""
-              </Span>
-            )}
+            &nbsp; {errors.sex && <FormFieldError name="sex" />}
           </FormGroup>
         </div>
 
@@ -142,13 +124,7 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.email ? (
-              <FormFieldError name="email" />
-            ) : (
-              <Span variant="body" color="redPigment">
-                ""
-              </Span>
-            )}
+            &nbsp; {errors.email && <FormFieldError name="email" />}
           </FormGroup>
 
           <FormGroup>
@@ -161,13 +137,7 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.password ? (
-              <FormFieldError name="password" />
-            ) : (
-              <Span variant="body" color="redPigment">
-                ""
-              </Span>
-            )}
+            &nbsp; {errors.password && <FormFieldError name="password" />}
           </FormGroup>
 
           <FormGroup>
@@ -179,12 +149,9 @@ function LoginForm(props: FormProps & Props) {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.confirmPassword ? (
+            &nbsp;{' '}
+            {errors.confirmPassword && (
               <FormFieldError name="confirmPassword" />
-            ) : (
-              <Span variant="body" color="redPigment">
-                ""
-              </Span>
             )}
           </FormGroup>
         </div>

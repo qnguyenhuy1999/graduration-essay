@@ -61,7 +61,7 @@ export function EditElementModal(props: Props) {
     <Modal
       title={'Edit element'}
       visible={visible}
-      width={'1000px'}
+      width={'calc(100vw - 400px)'}
       handleClose={handleClose}
       className={'modal-center'}
     >

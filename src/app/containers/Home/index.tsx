@@ -34,6 +34,9 @@ export function Home() {
 
   useEffect(() => {
     dispatch(actions.getSlides());
+    return () => {
+      dispatch(actions.resetState());
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
