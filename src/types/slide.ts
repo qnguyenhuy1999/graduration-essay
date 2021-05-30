@@ -8,3 +8,8 @@ export interface Slide {
 export interface CreateSlideFormValues {
   name: string;
 }
+
+export interface UpdateSlidePayload {
+  id: string;
+  name: string;
+}

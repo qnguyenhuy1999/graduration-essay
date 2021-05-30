@@ -15,13 +15,14 @@ import { CreateSlideFormValues } from 'types/slide';
 import { actions } from '../../slice';
 
 interface Props {
-  visible: boolean;
+  infoModalCUSlide: any;
   handleClose: () => void;
 }
 
 interface FormFormikProps {
   handleClose: () => void;
   dispatch: Dispatch<any>;
+  data: any;
 }
 
 interface FormProps
@@ -29,24 +30,34 @@ interface FormProps
     FormFormikProps {}
 
 export function ModalCreateSlide(props: Props) {
-  const { visible, handleClose } = props;
+  const { infoModalCUSlide, handleClose } = props;
   const dispatch = useDispatch();
 
   return (
     <Modal
-      title="Create new slide"
-      visible={visible}
+      title={
+        infoModalCUSlide?.data?.id
+          ? `Edit ${infoModalCUSlide?.data?.name}`
+          : 'Create new slide'
+      }
+      visible={infoModalCUSlide?.isVisible}
       width="450px"
       handleClose={handleClose}
       className="modal-center"
     >
-      <FormCreateSlideFormik handleClose={handleClose} dispatch={dispatch} />
+      <FormCreateSlideFormik
+        data={infoModalCUSlide?.data}
+        handleClose={handleClose}
+        dispatch={dispatch}
+      />
     </Modal>
   );
 }
 
 const FormCreateSlide = (props: FormProps) => {
   const {
+    values,
+    data,
     handleClose,
     handleSubmit,
     handleChange,
@@ -64,6 +75,7 @@ const FormCreateSlide = (props: FormProps) => {
           name="name"
           onChange={handleChange}
           onBlur={handleBlur}
+          value={values.name}
         />
         <FormFieldError name="name" />
       </FormGroup>
@@ -74,7 +86,7 @@ const FormCreateSlide = (props: FormProps) => {
         disabled={!(dirty || isValid)}
         mr="s"
       >
-        Create
+        {data?.id ? 'Edit' : 'Create'}
       </Button>
       <Button type="button" variant="secondary" onClick={handleClose}>
         Cancel
@@ -88,14 +100,18 @@ const FormCreateSlideFormik = withFormik<
   CreateSlideFormValues
 >({
   isInitialValid: false,
-  mapPropsToValues: () => ({
-    name: '',
+  mapPropsToValues: ({ data }) => ({
+    name: data?.name || '',
   }),
   validationSchema: Yup.object().shape({
     name: Yup.string().required(),
   }),
   handleSubmit: (values, { props }) => {
-    const { dispatch } = props;
-    dispatch(actions.createSlide({ ...values }));
+    const { dispatch, data } = props;
+    if (data) {
+      dispatch(actions.updateSlide({ ...values, id: data.id }));
+    } else {
+      dispatch(actions.createSlide({ ...values }));
+    }
   },
 })(FormCreateSlide);

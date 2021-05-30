@@ -27,10 +27,11 @@ export function Home() {
     loading,
     error,
     createSlideResult,
+    updateSlideResult,
     removeSlideResult,
   } = useSelector(selectHome);
   const dispatch = useDispatch();
-  const [isShowModalCreateSlide, setIsShowModalCreateSlide] = useState(false);
+  const [infoModalCUSlide, setInfoModalCUSlide] = useState<any>(null);
 
   useEffect(() => {
     dispatch(actions.getSlides());
@@ -42,8 +43,14 @@ export function Home() {
 
   useEffect(() => {
     if (createSlideResult) {
-      onCloseModalCreateSlide();
+      closeModalCUSlide();
       ToastAlert.success('Create new slide successfully');
+      dispatch(actions.resetStateResult());
+    }
+
+    if (updateSlideResult) {
+      closeModalCUSlide();
+      ToastAlert.success('Update slide successfully');
       dispatch(actions.resetStateResult());
     }
 
@@ -56,10 +63,16 @@ export function Home() {
       ToastAlert.error(error);
       dispatch(actions.resetStateResult());
     }
-  }, [createSlideResult, dispatch, error, removeSlideResult]);
+  }, [
+    createSlideResult,
+    dispatch,
+    error,
+    removeSlideResult,
+    updateSlideResult,
+  ]);
 
-  const onCloseModalCreateSlide = () => {
-    setIsShowModalCreateSlide(false);
+  const closeModalCUSlide = () => {
+    setInfoModalCUSlide({ isVisible: false, data: null });
   };
 
   return (
@@ -75,7 +88,9 @@ export function Home() {
             <Button
               variant="primary"
               mr="s"
-              onClick={() => setIsShowModalCreateSlide(true)}
+              onClick={() =>
+                setInfoModalCUSlide({ isVisible: true, data: null })
+              }
             >
               Create new slide
             </Button>
@@ -96,6 +111,7 @@ export function Home() {
                 status={slide.status}
                 id={slide.id}
                 key={slide.id}
+                setInfoModalCUSlide={setInfoModalCUSlide}
               />
             ))
           )}
@@ -103,8 +119,8 @@ export function Home() {
       </div>
 
       <ModalCreateSlide
-        visible={isShowModalCreateSlide}
-        handleClose={onCloseModalCreateSlide}
+        infoModalCUSlide={infoModalCUSlide}
+        handleClose={closeModalCUSlide}
       />
     </ProtectedLayout>
   );

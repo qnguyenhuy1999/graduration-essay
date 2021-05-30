@@ -2,13 +2,14 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from 'utils/@reduxjs/toolkit';
 
 import { ContainerState } from './types';
-import { CreateSlideFormValues, Slide } from 'types/slide';
+import { CreateSlideFormValues, Slide, UpdateSlidePayload } from 'types/slide';
 
 // The initial state of the Home container
 export const initialState: ContainerState = {
   loading: false,
   slides: [],
   createSlideResult: null,
+  updateSlideResult: null,
   removeSlideResult: null,
   error: null,
 };
@@ -29,6 +30,19 @@ const homeSlice = createSlice({
       state.slides.push(slide);
     },
 
+    updateSlide(state, action: PayloadAction<UpdateSlidePayload>) {},
+    updateSlideSuccess(
+      state,
+      action: PayloadAction<{ slideId: string; name: string }>,
+    ) {
+      const { slideId, name } = action.payload;
+      const cloneSlides = [...state.slides];
+      const slideIndex = cloneSlides.findIndex(slide => slide.id === slideId);
+      cloneSlides[slideIndex] = { ...cloneSlides[slideIndex], name };
+      state.slides = cloneSlides;
+      state.updateSlideResult = action.payload;
+    },
+
     removeSlide(state, action: PayloadAction<string>) {},
     removeSlideSuccess(state, action: PayloadAction<string>) {
       const slideId = action.payload;
@@ -44,6 +58,7 @@ const homeSlice = createSlice({
     resetStateResult(state) {
       state.error = initialState.error;
       state.createSlideResult = initialState.createSlideResult;
+      state.updateSlideResult = initialState.updateSlideResult;
       state.removeSlideResult = initialState.removeSlideResult;
     },
     resetState() {

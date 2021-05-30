@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 
 import { Box, Link, Span } from 'app/components';
 import { IconWrapper } from 'app/components/Icon';
-import { Trash } from 'app/components/Icon/Common';
+import { Edit, Trash } from 'app/components/Icon/Common';
 import { actions } from '../../slice';
 import { actions as trashActions } from 'app/containers/Trash/slice';
 
 export function Slide(props) {
-  const { name, id } = props;
+  const { name, id, setInfoModalCUSlide } = props;
   const [isHover, setIsHover] = useState(false);
   const dispatch = useDispatch();
 
@@ -26,15 +26,26 @@ export function Slide(props) {
           {name}
         </Span>
         {isHover && (
-          <TrashIconStyled
-            icon={Trash}
-            size="tiny"
-            fill="primaryBlue"
-            onClick={e => {
-              e.preventDefault();
-              dispatch(actions.removeSlide(id));
-            }}
-          />
+          <div>
+            <EditIconStyled
+              icon={Edit}
+              size="tiny"
+              fill="primaryBlue"
+              onClick={e => {
+                e.preventDefault();
+                setInfoModalCUSlide({ isVisible: true, data: { id, name } });
+              }}
+            />
+            <TrashIconStyled
+              icon={Trash}
+              size="tiny"
+              fill="redPigment"
+              onClick={e => {
+                e.preventDefault();
+                dispatch(actions.removeSlide(id));
+              }}
+            />
+          </div>
         )}
       </Box>
     </Link>
@@ -63,4 +74,10 @@ const TrashIconStyled = styled(IconWrapper)`
   position: absolute;
   top: -12px;
   right: -5px;
+`;
+
+const EditIconStyled = styled(IconWrapper)`
+  position: absolute;
+  top: -12px;
+  left: -5px;
 `;

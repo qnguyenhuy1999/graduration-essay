@@ -90,7 +90,7 @@ function UpdateProfileForm(props: Props & FormProps) {
       </FormGroup>
 
       <Button variant="primary" type="submit" disabled={!(dirty && isValid)}>
-        Change password
+        Update
       </Button>
     </form>
   );

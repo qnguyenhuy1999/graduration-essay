@@ -39,8 +39,20 @@ export function* removeSlide(action) {
   }
 }
 
+export function* updateSlide(action) {
+  const { id, name } = action.payload;
+
+  try {
+    yield call([SlideService, SlideService.updateSlide], id, name);
+    yield put(actions.updateSlideSuccess({ slideId: id, name }));
+  } catch (err) {
+    yield put(actions.getError(err.data.message));
+  }
+}
+
 export function* homeSaga() {
   yield takeLatest(actions.getSlides.type, getSlides);
   yield takeLatest(actions.createSlide.type, createSlide);
+  yield takeLatest(actions.updateSlide.type, updateSlide);
   yield takeLatest(actions.removeSlide.type, removeSlide);
 }

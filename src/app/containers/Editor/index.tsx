@@ -76,7 +76,7 @@ export const Editor = () => {
     }
 
     if (resetSlideResult) {
-      ToastAlert.success('Element successfully reset');
+      ToastAlert.success('Slide successfully reset');
       dispatch(actions.resetStateResult());
     }
 
