@@ -15,7 +15,7 @@ import { reducer, sliceKey, actions } from './slice';
 import { selectEditor } from './selectors';
 import { editorSaga } from './saga';
 
-import { Button } from 'app/components/Common';
+import { Button, H5 } from 'app/components/Common';
 import { Element } from './components/Element';
 import { Line } from './components/Line';
 import { ProtectedLayout } from '../ProtectedLayout';
@@ -28,6 +28,7 @@ export const Editor = () => {
   useInjectSaga({ key: sliceKey, saga: editorSaga });
 
   const {
+    infoSlideDetail,
     listElements,
     listLines,
     createElementResult,
@@ -164,11 +165,16 @@ export const Editor = () => {
           <meta name="description" content="Description of Home" />
         </Helmet>
 
-        <ButtonWrapper
-          onClick={() => dispatch(actions.resetSlide({ slideId }))}
-        >
-          <Button variant="primary">Reset</Button>
-        </ButtonWrapper>
+        <Wrapper>
+          <H5 mb="0">{infoSlideDetail?.name}</H5>
+          <Button
+            variant="primary"
+            ml="m"
+            onClick={() => dispatch(actions.resetSlide({ slideId }))}
+          >
+            Reset
+          </Button>
+        </Wrapper>
 
         {listElements.length > 0 &&
           listElements.map(element => (
@@ -219,7 +225,9 @@ const HomeWrapper = styled.div`
   position: relative;
 `;
 
-const ButtonWrapper = styled.div`
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
   position: absolute;
   top: 15px;
   right: 0;

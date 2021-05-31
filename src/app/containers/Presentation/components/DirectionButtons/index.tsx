@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { memo } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useSelector } from 'react-redux';
 
 import { Button } from 'app/components';
 import { Node } from 'types/element';
-import { selectEditor } from 'app/containers/Editor/selectors';
 import { convertNumberToDirection } from 'lib/helpers/element';
+import { selectEditor } from 'app/containers/Editor/selectors';
 
 interface Props {
   nodes: Node[];
@@ -15,35 +15,10 @@ interface Props {
   setNextDirection: any;
 }
 
-export function DirectionButtons(props: Props) {
+export const DirectionButtons = memo((props: Props) => {
   const { nodes, slideId, elementId, setNextDirection } = props;
   const history = useHistory();
   const { listLines } = useSelector(selectEditor);
-
-  const handleDirection = key => {
-    const node = nodes?.find(
-      node => node.nodeNumber === Number(key) && node.linkId !== 'empty',
-    );
-
-    if (node) {
-      const line = listLines.find(line => line.linkId === node.linkId);
-      const currentItem = line?.from === elementId ? line?.to : line?.from;
-      history.push(`/slide/${slideId}/presentation?currentItem=${currentItem}`);
-    }
-
-    setNextDirection(convertNumberToDirection(key));
-  };
-
-  useEffect(() => {
-    document.addEventListener('keydown', e => {
-      handleDirection(e.key);
-    });
-    return () => {
-      document.removeEventListener('keydown', e => {
-        handleDirection(e.key);
-      });
-    };
-  });
 
   const renderDirectionButton = () => {
     const linkedNodes = nodes?.filter(node => node.linkId !== 'empty');
@@ -75,7 +50,7 @@ export function DirectionButtons(props: Props) {
   return (
     <DirectionButtonStyled>{renderDirectionButton()}</DirectionButtonStyled>
   );
-}
+});
 
 const DirectionButtonStyled = styled.div`
   display: flex;

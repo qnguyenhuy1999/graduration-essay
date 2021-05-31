@@ -66,15 +66,16 @@ export function Trash(props: Props) {
             List trash slide
           </H4>
         </Flex>
-        <Flex flexWrap="wrap">
+        <Flex flexWrap="wrap" className="row">
           {loading ? (
             <Span variant="body">Loading....</Span>
           ) : (
-            slides.map(slide => (
+            slides.map((slide, index) => (
               <TrashSlide
                 name={slide.name}
                 status={slide.status}
                 id={slide.id}
+                index={index + 1}
                 key={slide.id}
               />
             ))

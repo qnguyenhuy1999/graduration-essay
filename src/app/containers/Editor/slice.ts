@@ -12,10 +12,12 @@ import {
   UpdateElement,
 } from 'types/element';
 import { CreateLine, Line, RemoveLine } from 'types/line';
+import { InfoDetailSlide } from '../../../types/slide';
 
 // The initial state of the Editor container
 export const initialState: ContainerState = {
   loading: false,
+  infoSlideDetail: null,
   listElements: [],
   listLines: [],
   createElementResult: null,
@@ -69,9 +71,17 @@ const editorSlice = createSlice({
     getListElements(state, action: PayloadAction<{ slideId: string }>) {
       state.loading = true;
     },
-    getListElementsSuccess(state, action: PayloadAction<Element[]>) {
+    getListElementsSuccess(
+      state,
+      action: PayloadAction<{
+        infoSlideDetail: InfoDetailSlide;
+        listElements: Element[];
+      }>,
+    ) {
+      const { infoSlideDetail, listElements } = action.payload;
       state.loading = false;
-      state.listElements = action.payload;
+      state.infoSlideDetail = infoSlideDetail;
+      state.listElements = listElements;
     },
 
     setListLines(state, action: PayloadAction<Line[]>) {

@@ -251,6 +251,8 @@ const EditorStyled = styled(Box)<any>`
   .editor {
     height: calc(${EDITOR_HEIGHT} - 70px);
   }
+  border: 1px solid ${props => props.theme.colors.northeastSnow};
+  padding: ${props => props.theme.space.m};
 `;
 
 const FormWrapperStyled = styled.div`

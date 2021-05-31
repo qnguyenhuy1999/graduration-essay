@@ -101,15 +101,15 @@ export function Home() {
             </Button>
           </Flex>
         </Flex>
-        <Flex flexWrap="wrap">
+        <Flex flexWrap="wrap" className="row">
           {loading ? (
             <Span variant="body">Loading....</Span>
           ) : (
-            slides.map(slide => (
+            slides.map((slide, index) => (
               <Slide
                 name={slide.name}
-                status={slide.status}
                 id={slide.id}
+                index={index + 1}
                 key={slide.id}
                 setInfoModalCUSlide={setInfoModalCUSlide}
               />

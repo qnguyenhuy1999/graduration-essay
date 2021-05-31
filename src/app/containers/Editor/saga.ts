@@ -12,7 +12,21 @@ export function* getListElements(action) {
       slideId,
     );
     const { data } = sessionResponse;
-    yield put(actions.getListElementsSuccess(data.responseObject.elements));
+    const { responseObject } = data;
+    const { elements } = responseObject;
+    const infoSlideDetail = {
+      accessModifier: responseObject.accessModifier,
+      id: responseObject.id,
+      name: responseObject.name,
+      status: responseObject.status,
+      userId: responseObject.userId,
+    };
+    yield put(
+      actions.getListElementsSuccess({
+        listElements: elements,
+        infoSlideDetail,
+      }),
+    );
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }

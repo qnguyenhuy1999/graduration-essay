@@ -20,7 +20,7 @@ export function Modal(props: Props) {
       width={width}
       className={className}
     >
-      <Box boxShadow="element" borderRadius="5px" bg="northeastSnow">
+      <Box boxShadow="element" borderRadius="5px" bg="white">
         <ModalBootstrap.Header closeButton className="mb-1">
           <H4>{title}</H4>
         </ModalBootstrap.Header>

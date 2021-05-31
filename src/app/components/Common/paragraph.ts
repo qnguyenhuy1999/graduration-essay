@@ -6,6 +6,7 @@ import {
   compose,
   color,
   space,
+  fontWeight,
   layout,
 } from 'styled-system';
 
@@ -60,7 +61,7 @@ const Span = styled.span<BaseParagraphProps>`
       },
     },
   })}
-  ${compose(color, space, layout)}
+  ${compose(color, space, fontWeight, layout)}
 `;
 
 export { P, Span };

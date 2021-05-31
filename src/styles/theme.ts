@@ -4,6 +4,7 @@ const theme = {
     primaryBlack: '#242424',
     primaryWhite: '#FDFEFF',
     redPigment: '#C20E0E',
+    northeastSnow: '#F5F6F8',
   },
   space: {
     none: 0,

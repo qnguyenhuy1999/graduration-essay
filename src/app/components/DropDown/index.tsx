@@ -38,4 +38,8 @@ const DropDownButtonStyled = styled(DropdownButton)<any>`
     outline: none !important;
     box-shadow: none !important;
   }
+
+  .dropdown-menu {
+    z-index: 9999;
+  }
 `;

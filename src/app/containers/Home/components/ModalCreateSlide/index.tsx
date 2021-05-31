@@ -86,7 +86,7 @@ const FormCreateSlide = (props: FormProps) => {
         disabled={!(dirty || isValid)}
         mr="s"
       >
-        {data?.id ? 'Edit' : 'Create'}
+        {data?.id ? 'Update' : 'Create'}
       </Button>
       <Button type="button" variant="secondary" onClick={handleClose}>
         Cancel

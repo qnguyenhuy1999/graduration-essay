@@ -4,7 +4,7 @@
  *
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
@@ -12,7 +12,6 @@ import { useParams, useHistory } from 'react-router-dom';
 import { useInjectReducer, useInjectSaga } from 'utils/redux-injectors';
 import { reducer, sliceKey } from './slice';
 import {
-  actions,
   actions as editorActions,
   reducer as editorReducer,
   sliceKey as editorSlideKey,
@@ -23,8 +22,9 @@ import { ProtectedLayout } from '../ProtectedLayout';
 import { selectEditor } from '../Editor/selectors';
 import { PresentationView } from './components/PresentationView';
 import { DirectionButtons } from './components/DirectionButtons';
-import { generateLines } from '../../../lib/helpers/line';
+import { generateLines } from 'lib/helpers/line';
 import { MiniMap } from './components/MiniMap';
+import { convertNumberToDirection } from 'lib/helpers/element';
 
 export const Presentation = () => {
   useInjectReducer({ key: sliceKey, reducer: reducer });
@@ -33,38 +33,69 @@ export const Presentation = () => {
   useInjectSaga({ key: editorSlideKey, saga: editorSaga });
 
   const dispatch = useDispatch();
-  const { location } = useHistory();
+  const history = useHistory();
+  const { location } = history;
   const { slideId } = useParams<{ slideId: string }>();
   const { listElements } = useSelector(selectEditor);
+  const { listLines } = useSelector(selectEditor);
   const [nextDirection, setNextDirection] = useState<string>('');
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setNextDirection('');
-    }, 2000);
-    return () => {
-      clearTimeout(timeout);
-    };
-  });
+  const [currentElement, setCurrentElement] = useState<any>(null);
 
   useEffect(() => {
     dispatch(editorActions.getListElements({ slideId }));
     return () => {
-      dispatch(actions.resetState());
+      dispatch(editorActions.resetState());
       setNextDirection('');
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    dispatch(actions.setListLines(generateLines(listElements)));
+    dispatch(editorActions.setListLines(generateLines(listElements)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listElements]);
 
-  const currentSlideId = location.search.split('currentItem=')[1];
-  const currentElement =
-    listElements.find(element => element.elementId === currentSlideId) ||
-    listElements[0];
+  useEffect(() => {
+    const currentSlideId = location.search.split('currentItem=')[1];
+    const currentElement =
+      listElements.find(element => element.elementId === currentSlideId) ||
+      listElements[0];
+    setCurrentElement(currentElement);
+  }, [listElements, location.search]);
+
+  const handleDirection = useCallback(
+    ({ key }) => {
+      const linkedNode = currentElement?.nodes?.find(
+        node => node.nodeNumber === Number(key) && node.linkId !== 'empty',
+      );
+
+      if (linkedNode) {
+        const line = listLines.find(line => line.linkId === linkedNode.linkId);
+        const nextItem =
+          line?.from === currentElement?.elementId ? line?.to : line?.from;
+
+        if (nextItem) {
+          history.push(
+            `/slide/${slideId}/presentation?currentItem=${nextItem}`,
+          );
+          setNextDirection(convertNumberToDirection(key));
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [currentElement, slideId],
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleDirection);
+    const timeout = setTimeout(() => {
+      setNextDirection('');
+    }, 2000);
+    return () => {
+      document.removeEventListener('keydown', handleDirection);
+      clearTimeout(timeout);
+    };
+  }, [handleDirection, setNextDirection]);
 
   return (
     <ProtectedLayout>

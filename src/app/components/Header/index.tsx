@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
@@ -36,6 +36,17 @@ export const Header = () => {
       action: logout,
     },
   ];
+
+  useEffect(() => {
+    if (document) {
+      if (history.location.pathname.indexOf('/presentation') > -1) {
+        if (document.documentElement.requestFullscreen)
+          document.documentElement.requestFullscreen();
+      } else {
+        if (document.fullscreen) document.exitFullscreen();
+      }
+    }
+  }, [history.location.pathname]);
 
   return (
     <CustomHeader>

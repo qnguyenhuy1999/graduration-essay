@@ -30,6 +30,7 @@ import {
 import { PublicLayout } from '../PublicLayout';
 import { RegisterFormValues } from 'types';
 import ToastAlert from 'lib/services/alert.service';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   dispatch: Dispatch<any>;
@@ -49,10 +50,12 @@ function LoginForm(props: FormProps & Props) {
     isSubmitting,
   } = props;
   const { registerResult, error } = useSelector(selectRegister);
+  const history = useHistory();
 
   useEffect(() => {
     if (registerResult) {
       ToastAlert.success('Register success.');
+      history.push('/login');
     }
 
     if (error) {
@@ -64,7 +67,7 @@ function LoginForm(props: FormProps & Props) {
     }
 
     dispatch(actions.resetState());
-  }, [dispatch, error, registerResult, setSubmitting]);
+  }, [dispatch, error, history, registerResult, setSubmitting]);
 
   return (
     <form onSubmit={handleSubmit}>
