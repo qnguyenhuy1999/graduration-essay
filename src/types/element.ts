@@ -64,6 +64,7 @@ export interface UpdateElement {
   html: string;
   status: 'able' | string;
   nodes: NodeUpdate[];
+  type: string;
 }
 
 export interface ResponseNewElement {

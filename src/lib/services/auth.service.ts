@@ -7,7 +7,6 @@ export class AuthServiceFactory extends BaseApiService {
   }
 
   login(loginInfo: LoginFormValues): Promise<ApiResponse> {
-    localStorage.removeItem('sp_token');
     return this.post(
       '/api/login',
       {

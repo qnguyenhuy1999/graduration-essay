@@ -30,6 +30,9 @@ export function ProfileLayout(props) {
     if (changePasswordResult) {
       ToastAlert.success('Password successfully updated');
       dispatch(actions.resetStateResult());
+      dispatch(authActions.resetState());
+      localStorage.removeItem('sp_token');
+      dispatch(authActions.getCurrentUser());
     }
 
     if (changeProfileResult) {
@@ -42,7 +45,7 @@ export function ProfileLayout(props) {
       ToastAlert.error(error);
       dispatch(actions.resetStateResult());
     }
-  }, [changePasswordResult, changeProfileResult, dispatch, error]);
+  }, [changePasswordResult, changeProfileResult, dispatch, error, history]);
 
   return (
     <Flex mt="50px" alignItems="flex-start">

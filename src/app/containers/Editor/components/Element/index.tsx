@@ -68,6 +68,7 @@ export const Element = (props: Props) => {
       status: element.status,
       elementId: element.elementId,
       slideId,
+      type: 'edit',
       ...payload,
     };
     dispatch(actions.updateElement(data));
@@ -105,6 +106,7 @@ export const Element = (props: Props) => {
         }),
         elementId: element.elementId,
         slideId,
+        type: 'drag',
       };
 
       dispatch(actions.updateElement(data));

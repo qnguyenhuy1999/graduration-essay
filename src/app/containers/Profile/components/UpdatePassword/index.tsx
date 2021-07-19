@@ -4,7 +4,7 @@
  *
  */
 
-import React, { Dispatch } from 'react';
+import React, { Dispatch, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
 import { withFormik, FormikProps } from 'formik';
@@ -25,6 +25,7 @@ import { UpdatePasswordFormValues } from 'types/profile';
 import { selectAuth } from 'app/containers/Auth/selectors';
 import { ProtectedLayout } from 'app/containers/ProtectedLayout';
 import { ProfileLayout } from '../ProfileLayout';
+import { ConfirmModalDeleteSlide } from '../ConfirmModalUpdatePassword';
 
 interface Props {
   dispatch: Dispatch<any>;
@@ -42,63 +43,85 @@ function UpdatePasswordForm(props: Props & FormProps) {
     dirty,
     isValid,
   } = props;
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+
+  const handleAccept = () => {
+    handleClose();
+    handleSubmit();
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormGroup>
-        <FormLabel htmlFor="email">Email</FormLabel>
-        <FormControl
-          type="email"
-          id="email"
-          name="email"
-          value={values.email}
-          disabled={true}
-        />
-        <FormFieldError name="email" />
-      </FormGroup>
+    <div>
+      <form>
+        <FormGroup>
+          <FormLabel htmlFor="email">Email</FormLabel>
+          <FormControl
+            type="email"
+            id="email"
+            name="email"
+            value={values.email}
+            disabled={true}
+          />
+          <FormFieldError name="email" />
+        </FormGroup>
 
-      <FormGroup>
-        <FormLabel htmlFor="oldPassword">Old Password</FormLabel>
-        <FormControl
-          type="password"
-          id="oldPassword"
-          name="oldPassword"
-          autoComplete="current-password"
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        <FormFieldError name="oldPassword" />
-      </FormGroup>
+        <FormGroup>
+          <FormLabel htmlFor="oldPassword">Old Password</FormLabel>
+          <FormControl
+            type="password"
+            id="oldPassword"
+            name="oldPassword"
+            autoComplete="current-password"
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          <FormFieldError name="oldPassword" />
+        </FormGroup>
 
-      <FormGroup>
-        <FormLabel htmlFor="oldPassword">New Password</FormLabel>
-        <FormControl
-          type="password"
-          id="newPassword"
-          name="newPassword"
-          autoComplete="current-password"
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        <FormFieldError name="newPassword" />
-      </FormGroup>
+        <FormGroup>
+          <FormLabel htmlFor="oldPassword">New Password</FormLabel>
+          <FormControl
+            type="password"
+            id="newPassword"
+            name="newPassword"
+            autoComplete="current-password"
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          <FormFieldError name="newPassword" />
+        </FormGroup>
 
-      <FormGroup>
-        <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
-        <FormControl
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
-        <FormFieldError name="confirmPassword" />
-      </FormGroup>
+        <FormGroup>
+          <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
+          <FormControl
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          <FormFieldError name="confirmPassword" />
+        </FormGroup>
 
-      <Button variant="primary" type="submit" disabled={!(dirty && isValid)}>
-        Change password
-      </Button>
-    </form>
+        <Button
+          variant="primary"
+          type="button"
+          disabled={!(dirty && isValid)}
+          onClick={() => setIsVisible(true)}
+        >
+          Change password
+        </Button>
+      </form>
+      <ConfirmModalDeleteSlide
+        isVisible={isVisible}
+        handleClose={handleClose}
+        handleAccept={handleAccept}
+      />
+    </div>
   );
 }
 

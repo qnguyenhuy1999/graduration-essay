@@ -126,6 +126,14 @@ export function Login() {
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const token = localStorage.getItem('sp_token');
+    if (token) {
+      window.location.reload();
+      localStorage.removeItem('sp_token');
+    }
+  }, []);
+
   return (
     <>
       <Helmet>

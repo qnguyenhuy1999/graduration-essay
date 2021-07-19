@@ -68,6 +68,9 @@ export const Editor = () => {
     }
 
     if (updateElementResult) {
+      if (updateElementResult.type === 'edit') {
+        ToastAlert.success('Element successfully updated');
+      }
       dispatch(actions.resetStateResult());
     }
 

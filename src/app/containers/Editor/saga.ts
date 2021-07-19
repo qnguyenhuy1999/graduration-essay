@@ -100,14 +100,25 @@ export function* removeLine(action) {
 }
 
 export function* updateElement(action) {
+  const { type } = action.payload;
+  const dataRequest = {
+    caption: action.payload.caption,
+    elementId: action.payload.elementId,
+    html: action.payload.html,
+    nodes: action.payload.nodes,
+    position: action.payload.position,
+    slideId: action.payload.slideId,
+    status: action.payload.status,
+  };
+
   try {
     const sessionResponse = yield call(
       [ElementService, ElementService.updateElement],
-      action.payload,
+      dataRequest,
     );
     const { data } = sessionResponse;
     const { responseObject } = data;
-    yield put(actions.updateElementSuccess({ ...responseObject }));
+    yield put(actions.updateElementSuccess({ ...responseObject, type }));
   } catch (err) {
     yield put(actions.getError(err.data.message));
   }
